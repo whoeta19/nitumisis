@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Инжиниринг горных машин — НИТУ МИСИС · АЛРОСА</title>
+<meta name="description" content="Инжиниринг горных и транспортных машин. НИТУ МИСИС, Горный институт. Целевое направление АЛРОСА.">
+<!-- Google Fonts: Orbitron (display), Rajdhani (body), JetBrains Mono (HUD-метки) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ТОКЕНЫ И БАЗА
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --bg:        #05070d;   /* фон всего сайта */
+  --bg-2:      #080c16;   /* чуть светлее — панели */
+  --ice:       #00d4ff;   /* ледяной голубой акцент */
+  --gold:      #ffb347;   /* алмазно-золотой акцент */
+  --text:      #cfd8e6;   /* основной текст */
+  --text-dim:  #6b7a92;   /* приглушённый текст */
+  --line:      rgba(0,212,255,.18); /* тонкие линии */
+  --font-d: 'Orbitron', sans-serif;
+  --font-b: 'Rajdhani', sans-serif;
+  --font-m: 'JetBrains Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-b);
+  font-size:18px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+::selection{background:rgba(0,212,255,.25)}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO — SPOTLIGHT REVEAL
+   Два слоя одной SVG-сцены: нижний «живой», верхний тёмный.
+   Верхний слой маскируется radial-gradient, центр которого
+   следует за курсором через CSS-переменные --mx/--my (px)
+   и радиус --mr (px), обновляемые из JS с лерпом.
+   ═══════════════════════════════════════════════════════════════ */
+.hero{
+  position:relative;
+  height:100vh;
+  min-height:560px;
+  overflow:hidden;
+  background:#03040a;
+  /* стартовые значения переменных маски */
+  --mx: 50%;
+  --my: 60%;
+  --mr: 0px;
+}
+.hero .layer{
+  position:absolute;
+  inset:0;
+}
+.hero .layer svg{
+  width:100%;
+  height:100%;
+  display:block;
+}
+/* Верхний тёмный слой: маска-дырка вокруг курсора.
+   transparent в центре = слой невидим = виден нижний «живой» слой */
+.scene-dark{
+  -webkit-mask-image: radial-gradient(circle var(--mr) at var(--mx) var(--my),
+      transparent 0%, transparent 35%, black 75%);
+  mask-image: radial-gradient(circle var(--mr) at var(--mx) var(--my),
+      transparent 0%, transparent 35%, black 75%);
+}
+/* Мягкое световое гало поверх сцены, движется через transform (не layout) */
+.halo{
+  position:absolute;
+  top:0; left:0;
+  width:560px; height:560px;
+  margin:-280px 0 0 -280px;
+  border-radius:50%;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(circle,
+      rgba(160,220,255,.55) 0%,
+      rgba(255,200,130,.18) 35%,
+      transparent 70%);
+  mix-blend-mode:screen;
+  will-change:transform,opacity;
+}
+/* Текст поверх сцены */
+.hero-copy{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  pointer-events:none;
+  padding:0 20px;
+  z-index:3;
+}
+.hero-copy .eyebrow{
+  font-family:var(--font-m);
+  font-size:12px;
+  letter-spacing:.35em;
+  color:var(--ice);
+  text-transform:uppercase;
+  margin-bottom:18px;
+  text-shadow:0 0 12px rgba(0,212,255,.6);
+}
+.hero-copy h1{
+  font-family:var(--font-d);
+  font-weight:900;
+  font-size:clamp(28px,5.4vw,74px);
+  letter-spacing:.08em;
+  color:#eaf4ff;
+  text-shadow:0 0 22px rgba(0,212,255,.35), 0 0 60px rgba(0,212,255,.15);
+  line-height:1.15;
+}
+.hero-copy .sub{
+  margin-top:16px;
+  font-size:clamp(15px,2vw,22px);
+  font-weight:500;
+  letter-spacing:.25em;
+  color:var(--text-dim);
+  text-transform:uppercase;
+}
+.hero-copy .hint{
+  position:absolute;
+  bottom:44px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:var(--font-m);
+  font-size:12px;
+  letter-spacing:.3em;
+  color:rgba(207,216,230,.5);
+  text-transform:uppercase;
+  animation:hintPulse 2.6s ease-in-out infinite;
+  white-space:nowrap;
+}
+@keyframes hintPulse{
+  0%,100%{opacity:.35}
+  50%{opacity:.9}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ОБЩЕЕ ДЛЯ СЕКЦИЙ: HUD-эстетика, reveal при скролле
+   ═══════════════════════════════════════════════════════════════ */
+.section{
+  position:relative;
+  max-width:1160px;
+  margin:0 auto;
+  padding:110px 24px;
+}
+.sec-label{
+  font-family:var(--font-m);
+  font-size:12px;
+  letter-spacing:.3em;
+  color:var(--ice);
+  margin-bottom:14px;
+}
+.sec-title{
+  font-family:var(--font-d);
+  font-weight:700;
+  font-size:clamp(24px,3.6vw,42px);
+  letter-spacing:.06em;
+  color:#e8f1fd;
+  margin-bottom:44px;
+}
+/* Уголки-скобки HUD */
+.corners{position:relative}
+.corners::before,.corners::after{
+  content:'';
+  position:absolute;
+  width:18px;height:18px;
+  border:1px solid var(--ice);
+  opacity:.55;
+  pointer-events:none;
+}
+.corners::before{top:0;left:0;border-right:none;border-bottom:none}
+.corners::after{bottom:0;right:0;border-left:none;border-top:none}
+/* Scroll reveal: элементы с .rv скрыты и всплывают */
+.rv{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .7s ease, transform .7s ease;
+  transition-delay:var(--d,0s);
+}
+.rv.on{opacity:1;transform:none}
+
+/* ═══════════════════════════════════════════════════════════════
+   СЕКЦИЯ 2 — ЦИФРЫ ИНДУСТРИИ
+   ═══════════════════════════════════════════════════════════════ */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1px;
+  background:var(--line);
+  border:1px solid var(--line);
+}
+.stat{
+  background:var(--bg);
+  padding:38px 26px;
+  text-align:left;
+}
+.stat .num{
+  font-family:var(--font-d);
+  font-weight:700;
+  font-size:clamp(30px,3.4vw,50px);
+  color:var(--ice);
+  text-shadow:0 0 18px rgba(0,212,255,.3);
+  line-height:1;
+}
+.stat .num .unit{
+  font-size:.45em;
+  color:var(--gold);
+  margin-left:4px;
+  letter-spacing:.05em;
+}
+.stat .cap{
+  margin-top:12px;
+  font-size:15px;
+  color:var(--text-dim);
+  line-height:1.45;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   СЕКЦИЯ 3 — ТЕХНИКА (карточки машин)
+   ═══════════════════════════════════════════════════════════════ */
+.machines{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+.card{
+  position:relative;
+  background:var(--bg-2);
+  border:1px solid rgba(0,212,255,.12);
+  padding:28px 24px 24px;
+  transition:transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+.card:hover,.card:focus-within{
+  transform:translateY(-6px);
+  border-color:rgba(0,212,255,.6);
+  box-shadow:0 0 24px rgba(0,212,255,.14), inset 0 0 24px rgba(0,212,255,.04);
+}
+.card .idx{
+  font-family:var(--font-m);
+  font-size:11px;
+  letter-spacing:.25em;
+  color:var(--text-dim);
+}
+.card h3{
+  font-family:var(--font-d);
+  font-weight:700;
+  font-size:19px;
+  letter-spacing:.05em;
+  color:#e8f1fd;
+  margin:10px 0 4px;
+}
+.card .role{
+  font-size:14px;
+  color:var(--gold);
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:16px;
+}
+/* Характеристики «печатаются» построчно на hover */
+.card .specs{
+  list-style:none;
+  border-top:1px solid rgba(0,212,255,.12);
+  padding-top:14px;
+  font-family:var(--font-m);
+  font-size:12.5px;
+  color:var(--text-dim);
+}
+.card .specs li{
+  padding:3px 0;
+  opacity:0;
+  transform:translateX(-8px);
+  transition:opacity .3s ease, transform .3s ease;
+}
+.card:hover .specs li,.card:focus-within .specs li{
+  opacity:1;transform:none;
+}
+.card:hover .specs li:nth-child(1){transition-delay:.05s}
+.card:hover .specs li:nth-child(2){transition-delay:.18s}
+.card:hover .specs li:nth-child(3){transition-delay:.31s}
+.card .specs b{color:var(--ice);font-weight:500}
+
+/* ═══════════════════════════════════════════════════════════════
+   СЕКЦИЯ 4 — АЛРОСА
+   ═══════════════════════════════════════════════════════════════ */
+.alrosa{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:60px;
+  align-items:center;
+}
+.diamond-wrap{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.diamond-wrap svg{
+  width:240px;height:240px;
+  animation:spin 22s linear infinite;
+  filter:drop-shadow(0 0 26px rgba(0,212,255,.3));
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.facts{list-style:none}
+.facts li{
+  position:relative;
+  padding:14px 0 14px 26px;
+  border-bottom:1px solid rgba(0,212,255,.1);
+  font-size:18px;
+}
+.facts li::before{
+  content:'◆';
+  position:absolute;
+  left:0;top:14px;
+  color:var(--gold);
+  font-size:12px;
+}
+.facts b{color:#e8f1fd;font-weight:600}
+
+/* ═══════════════════════════════════════════════════════════════
+   СЕКЦИЯ 5 — ФУТЕР С БЕГУЩЕЙ СТРОКОЙ
+   ═══════════════════════════════════════════════════════════════ */
+footer{
+  border-top:1px solid var(--line);
+  padding-top:0;
+}
+.marquee{
+  overflow:hidden;
+  white-space:nowrap;
+  padding:22px 0;
+  border-bottom:1px solid var(--line);
+}
+.marquee .track{
+  display:inline-block;
+  animation:marquee 24s linear infinite;
+}
+.marquee span{
+  font-family:var(--font-d);
+  font-weight:500;
+  font-size:16px;
+  letter-spacing:.3em;
+  color:var(--text-dim);
+  padding:0 6px;
+}
+.marquee .dot{color:var(--gold)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+.foot-note{
+  text-align:center;
+  font-family:var(--font-m);
+  font-size:12px;
+  letter-spacing:.2em;
+  color:var(--text-dim);
+  padding:28px 20px 34px;
+}
+.foot-note .ice{color:var(--ice)}
+
+/* ═══════════════════════════════════════════════════════════════
+   АДАПТИВ
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .machines{grid-template-columns:repeat(2,1fr)}
+  .alrosa{grid-template-columns:1fr;gap:36px;text-align:center}
+  .facts li{text-align:left}
+}
+@media (max-width:600px){
+  body{font-size:16px}
+  .section{padding:80px 18px}
+  .machines{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .diamond-wrap svg{width:180px;height:180px}
+}
+@media (max-width:400px){
+  .stats{grid-template-columns:1fr}
+  .stat{padding:28px 20px}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREFERS-REDUCED-MOTION: без анимаций, «живая» сцена видна сразу
+   ═══════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .scene-dark{display:none}          /* сразу показать lit-сцену */
+  .halo{display:none}
+  .rv{opacity:1;transform:none}
+  .card .specs li{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     HERO: SPOTLIGHT REVEAL
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="hero" id="hero">
+
+  <!-- НИЖНИЙ «ЖИВОЙ» СЛОЙ -->
+  <div class="layer scene-lit" aria-hidden="true">
+    <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <!-- ночное небо -->
+        <linearGradient id="skyLit" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#0b1230"/>
+          <stop offset=".6" stop-color="#13204a"/>
+          <stop offset="1" stop-color="#1c2f5e"/>
+        </linearGradient>
+        <!-- задний хребет -->
+        <linearGradient id="ridgeBack" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#22355f"/>
+          <stop offset="1" stop-color="#16244a"/>
+        </linearGradient>
+        <!-- средний хребет -->
+        <linearGradient id="ridgeMid" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#31497c"/>
+          <stop offset="1" stop-color="#1d2f5c"/>
+        </linearGradient>
+        <!-- передняя гора с карьером -->
+        <linearGradient id="mountainMain" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#54719f"/>
+          <stop offset=".45" stop-color="#3c5584"/>
+          <stop offset="1" stop-color="#25375f"/>
+        </linearGradient>
+        <!-- трава у подножия -->
+        <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2f7a4a"/>
+          <stop offset="1" stop-color="#173a26"/>
+        </linearGradient>
+        <!-- алмаз -->
+        <linearGradient id="gem" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#bff4ff"/>
+          <stop offset=".5" stop-color="#57d8ff"/>
+          <stop offset="1" stop-color="#1a9fd4"/>
+        </linearGradient>
+        <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="3"/>
+        </filter>
+        <filter id="blurBack"><feGaussianBlur stdDeviation="2.2"/></filter>
+      </defs>
+
+      <!-- небо -->
+      <rect width="1440" height="800" fill="url(#skyLit)"/>
+
+      <!-- звёзды -->
+      <g fill="#dfeeff">
+        <circle cx="120" cy="80" r="1.6"/><circle cx="300" cy="140" r="1.1"/>
+        <circle cx="480" cy="60" r="1.4"/><circle cx="640" cy="170" r="1"/>
+        <circle cx="820" cy="90" r="1.5"/><circle cx="990" cy="150" r="1.1"/>
+        <circle cx="1140" cy="70" r="1.6"/><circle cx="1290" cy="130" r="1.2"/>
+        <circle cx="210" cy="210" r="1"/><circle cx="720" cy="50" r="1.2"/>
+        <circle cx="1380" cy="60" r="1.3"/><circle cx="60" cy="180" r="1.1"/>
+        <circle cx="900" cy="200" r="1"/><circle cx="1060" cy="110" r="1.3"/>
+      </g>
+      <!-- луна -->
+      <circle cx="1210" cy="120" r="42" fill="#f4ecd6" opacity=".95"/>
+      <circle cx="1226" cy="110" r="42" fill="url(#skyLit)" opacity=".85"/>
+      <circle cx="1210" cy="120" r="60" fill="#f4ecd6" opacity=".08"/>
+
+      <!-- ЗАДНИЙ ХРЕБЕТ (темнее, размытее — глубина) -->
+      <path filter="url(#blurBack)" fill="url(#ridgeBack)"
+        d="M0 470 L170 330 L300 420 L470 260 L620 400 L760 300 L930 430 L1080 290 L1250 410 L1440 320 L1440 800 L0 800 Z"/>
+
+      <!-- СРЕДНИЙ ХРЕБЕТ -->
+      <path fill="url(#ridgeMid)"
+        d="M0 540 L220 380 L400 480 L560 340 L740 470 L950 350 L1130 480 L1300 380 L1440 460 L1440 800 L0 800 Z"/>
+      <!-- снежные шапки среднего хребта -->
+      <path fill="#dfe9f7" opacity=".5" d="M545 353 L560 340 L577 355 L565 362 L553 358 Z"/>
+      <path fill="#dfe9f7" opacity=".4" d="M936 362 L950 350 L966 363 L953 370 Z"/>
+
+      <!-- ПЕРЕДНЯЯ ГОРА с карьерными уступами -->
+      <path fill="url(#mountainMain)"
+        d="M180 800 L520 300 L640 380 L760 330 L1100 800 Z"/>
+      <!-- снежная шапка -->
+      <path fill="#e8f0fb" d="M497 334 L520 300 L548 318 L534 344 L512 350 Z" opacity=".85"/>
+
+      <!-- уступы карьера (bench terraces) на переднем склоне: ступени -->
+      <g stroke="#0e1830" stroke-width="1.5" fill="#2c4370">
+        <path d="M405 470 L560 470 L590 505 L370 505 Z"/>
+        <path d="M370 540 L620 540 L655 578 L330 578 Z"/>
+        <path d="M330 615 L690 615 L730 655 L285 655 Z"/>
+        <path d="M285 692 L760 692 L805 735 L240 735 Z"/>
+      </g>
+      <!-- светящиеся контуры уступов -->
+      <g stroke="#00d4ff" stroke-width="1.2" fill="none" opacity=".8" filter="url(#soft)">
+        <path d="M405 470 L560 470"/>
+        <path d="M370 540 L620 540"/>
+        <path d="M330 615 L690 615"/>
+        <path d="M285 692 L760 692"/>
+      </g>
+
+      <!-- РУДА В ТОЛЩЕ ГОРЫ: золотые прожилки -->
+      <g stroke="#ffb347" stroke-width="2" fill="none" opacity=".75" filter="url(#soft)" stroke-linecap="round">
+        <path d="M860 560 q30 25 18 62 q-10 32 14 58"/>
+        <path d="M920 610 q26 20 20 55"/>
+        <path d="M800 640 q-18 30 6 66"/>
+      </g>
+      <!-- алмазные кристаллы -->
+      <g filter="url(#soft)">
+        <path fill="url(#gem)" d="M885 690 l14 -18 l14 18 l-14 22 Z"/>
+        <path fill="url(#gem)" d="M950 720 l10 -13 l10 13 l-10 16 Z" opacity=".9"/>
+        <path fill="url(#gem)" d="M830 730 l8 -11 l8 11 l-8 13 Z" opacity=".85"/>
+      </g>
+      <g fill="#dff6ff" opacity=".9">
+        <circle cx="899" cy="686" r="1.6"/><circle cx="960" cy="717" r="1.3"/>
+      </g>
+
+      <!-- ═══ ТЕХНИКА НА УСТУПАХ (маленькая — масштаб горы) ═══ -->
+
+      <!-- Карьерный самосвал на 3-м уступе: наклонный кузов -->
+      <g transform="translate(430 594)">
+        <path fill="#131c30" d="M2 12 L30 12 L30 4 L10 4 L4 -4 L38 -6 L40 12 L44 12 L44 18 L0 18 Z"/>
+        <circle cx="10" cy="18" r="4.6" fill="#0c1322"/>
+        <circle cx="34" cy="18" r="4.6" fill="#0c1322"/>
+        <circle cx="10" cy="18" r="1.8" fill="#233350"/>
+        <circle cx="34" cy="18" r="1.8" fill="#233350"/>
+        <!-- фары -->
+        <circle cx="43" cy="14" r="1.8" fill="#ffe9a8" style="filter:drop-shadow(0 0 5px #ffd76e)"/>
+      </g>
+
+      <!-- Экскаватор со стрелой и ковшом на 2-м уступе -->
+      <g transform="translate(540 512)">
+        <rect x="0" y="8" width="26" height="10" rx="2" fill="#131c30"/>
+        <rect x="4" y="18" width="20" height="5" fill="#0c1322"/>
+        <rect x="6" y="0" width="12" height="9" rx="1.5" fill="#131c30"/>
+        <!-- стрела -->
+        <path d="M18 6 L44 -12 L48 -9 L24 10 Z" fill="#131c30"/>
+        <!-- рукоять + ковш -->
+        <path d="M44 -11 L52 6 L49 8 L42 -8 Z" fill="#131c30"/>
+        <path d="M48 6 L58 8 L54 16 L47 12 Z" fill="#0c1322"/>
+        <!-- фара кабины -->
+        <circle cx="17" cy="3" r="1.6" fill="#ffe9a8" style="filter:drop-shadow(0 0 5px #ffd76e)"/>
+      </g>
+
+      <!-- Буровая установка на 4-м уступе: мачта -->
+      <g transform="translate(640 660)">
+        <rect x="0" y="18" width="30" height="9" rx="2" fill="#131c30"/>
+        <rect x="3" y="27" width="24" height="4" fill="#0c1322"/>
+        <rect x="19" y="-26" width="5" height="44" fill="#131c30"/>
+        <path d="M19 -26 L24 -26 L21.5 -34 Z" fill="#131c30"/>
+        <line x1="21.5" y1="-18" x2="21.5" y2="18" stroke="#233350" stroke-width="1.4"/>
+        <rect x="4" y="10" width="12" height="8" rx="1.5" fill="#131c30"/>
+        <!-- фара -->
+        <circle cx="7" cy="14" r="1.6" fill="#ffe9a8" style="filter:drop-shadow(0 0 5px #ffd76e)"/>
+        <!-- маячок на мачте -->
+        <circle cx="21.5" cy="-32" r="1.5" fill="#7fe4ff" style="filter:drop-shadow(0 0 4px #00d4ff)"/>
+      </g>
+
+      <!-- ТРАВА И ДЕРЕВЬЯ у подножия -->
+      <path fill="url(#grass)" d="M0 742 Q240 720 480 744 Q760 770 1040 746 Q1260 728 1440 748 L1440 800 L0 800 Z"/>
+      <g fill="#1c5a34">
+        <path d="M120 748 l9 -26 l9 26 Z"/><path d="M150 750 l7 -20 l7 20 Z"/>
+        <path d="M1180 750 l9 -26 l9 26 Z"/><path d="M1215 752 l7 -19 l7 19 Z"/>
+        <path d="M1300 748 l8 -23 l8 23 Z"/><path d="M60 752 l7 -19 l7 19 Z"/>
+        <path d="M980 754 l7 -18 l7 18 Z"/>
+      </g>
+      <g stroke="#123c22" stroke-width="2">
+        <line x1="129" y1="748" x2="129" y2="756"/><line x1="1189" y1="750" x2="1189" y2="758"/>
+        <line x1="1308" y1="748" x2="1308" y2="755"/>
+      </g>
+      <!-- тёплое свечение у подножия карьера -->
+      <ellipse cx="520" cy="740" rx="330" ry="60" fill="#ffb347" opacity=".07"/>
+    </svg>
+  </div>
+
+  <!-- ВЕРХНИЙ ТЁМНЫЙ СЛОЙ: та же сцена, почти чёрная -->
+  <div class="layer scene-dark" aria-hidden="true">
+    <svg viewBox="0 0 1440 800" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="skyDark" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#03040a"/>
+          <stop offset="1" stop-color="#060a14"/>
+        </linearGradient>
+      </defs>
+      <rect width="1440" height="800" fill="url(#skyDark)"/>
+      <!-- едва различимые звёзды -->
+      <g fill="#20304a" opacity=".6">
+        <circle cx="120" cy="80" r="1.2"/><circle cx="480" cy="60" r="1"/>
+        <circle cx="820" cy="90" r="1.1"/><circle cx="1140" cy="70" r="1.2"/>
+        <circle cx="1210" cy="120" r="2"/>
+      </g>
+      <!-- те же хребты, тёмно-синие силуэты -->
+      <path fill="#070c18"
+        d="M0 470 L170 330 L300 420 L470 260 L620 400 L760 300 L930 430 L1080 290 L1250 410 L1440 320 L1440 800 L0 800 Z"/>
+      <path fill="#0a101f"
+        d="M0 540 L220 380 L400 480 L560 340 L740 470 L950 350 L1130 480 L1300 380 L1440 460 L1440 800 L0 800 Z"/>
+      <path fill="#060a14"
+        d="M180 800 L520 300 L640 380 L760 330 L1100 800 Z"/>
+      <!-- слабый контур хребта -->
+      <path fill="none" stroke="#13203a" stroke-width="1" opacity=".8"
+        d="M180 800 L520 300 L640 380 L760 330 L1100 800"/>
+      <path fill="none" stroke="#0f1a30" stroke-width="1" opacity=".7"
+        d="M0 540 L220 380 L400 480 L560 340 L740 470 L950 350 L1130 480 L1300 380 L1440 460"/>
+      <rect y="742" width="1440" height="58" fill="#04060d"/>
+    </svg>
+  </div>
+
+  <!-- Световое гало у курсора -->
+  <div class="halo" id="halo" aria-hidden="true"></div>
+
+  <!-- Текст поверх -->
+  <div class="hero-copy">
+    <div class="eyebrow">// mining · engineering · future</div>
+    <h1>ИНЖИНИРИНГ<br>ГОРНЫХ МАШИН</h1>
+    <div class="sub">НИТУ МИСИС · Горный институт</div>
+    <div class="hint">▚ проведи по горе ▞</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     СЕКЦИЯ 2 — ЦИФРЫ ИНДУСТРИИ
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section corners" id="stats">
+  <div class="sec-label rv">// SECTION 01 — ЦИФРЫ ИНДУСТРИИ</div>
+  <h2 class="sec-title rv" style="--d:.08s">Масштаб, который измеряется тоннами</h2>
+  <div class="stats">
+    <div class="stat rv" style="--d:.1s">
+      <div class="num"><span class="cnt" data-target="450">0</span><span class="unit">т</span></div>
+      <div class="cap">грузоподъёмность БелАЗ-75710 — самого большого самосвала в мире</div>
+    </div>
+    <div class="stat rv" style="--d:.2s">
+      <div class="num"><span class="cnt" data-target="37">0</span><span class="unit">%</span></div>
+      <div class="cap">доля АЛРОСА в мировой добыче алмазов</div>
+    </div>
+    <div class="stat rv" style="--d:.3s">
+      <div class="num"><span class="cnt" data-target="1200">0</span><span class="unit">м</span></div>
+      <div class="cap">глубина подземных алмазных рудников</div>
+    </div>
+    <div class="stat rv" style="--d:.4s">
+      <div class="num"><span class="cnt" data-target="10">0</span><span class="unit">/10</span></div>
+      <div class="cap">твёрдость алмаза по шкале Мооса — абсолютный максимум</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     СЕКЦИЯ 3 — ТЕХНИКА
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section" id="machines">
+  <div class="sec-label rv">// SECTION 02 — ТЕХНИКА</div>
+  <h2 class="sec-title rv" style="--d:.08s">Машины, которые двигают горы</h2>
+  <div class="machines">
+    <article class="card rv" style="--d:.05s" tabindex="0">
+      <div class="idx">UNIT-01</div>
+      <h3>БелАЗ-75710</h3>
+      <div class="role">Карьерный самосвал</div>
+      <ul class="specs">
+        <li><b>450 т</b> — грузоподъёмность</li>
+        <li><b>4 600 л.с.</b> — два дизеля</li>
+        <li><b>8</b> колёс высотой 4 м</li>
+      </ul>
+    </article>
+    <article class="card rv" style="--d:.12s" tabindex="0">
+      <div class="idx">UNIT-02</div>
+      <h3>ЭКГ-18</h3>
+      <div class="role">Карьерный экскаватор</div>
+      <ul class="specs">
+        <li><b>18 м³</b> — объём ковша</li>
+        <li><b>800 т</b> — рабочая масса</li>
+        <li><b>~90 c</b> — цикл черпания</li>
+      </ul>
+    </article>
+    <article class="card rv" style="--d:.19s" tabindex="0">
+      <div class="idx">UNIT-03</div>
+      <h3>СБШ-250</h3>
+      <div class="role">Буровой станок</div>
+      <ul class="specs">
+        <li><b>250 мм</b> — диаметр скважины</li>
+        <li><b>до 32 м</b> — глубина бурения</li>
+        <li><b>шарошечное</b> бурение</li>
+      </ul>
+    </article>
+    <article class="card rv" style="--d:.26s" tabindex="0">
+      <div class="idx">UNIT-04</div>
+      <h3>Конусная дробилка</h3>
+      <div class="role">Обогащение руды</div>
+      <ul class="specs">
+        <li><b>до 3 000 т/ч</b> — производительность</li>
+        <li><b>кимберлит</b> → фракции</li>
+        <li>первая ступень обогащения</li>
+      </ul>
+    </article>
+    <article class="card rv" style="--d:.33s" tabindex="0">
+      <div class="idx">UNIT-05</div>
+      <h3>Шахтный подъёмник</h3>
+      <div class="role">Подземная добыча</div>
+      <ul class="specs">
+        <li><b>&gt;1 000 м</b> — глубина ствола</li>
+        <li><b>до 50 т</b> — скип за подъём</li>
+        <li>артерия подземного рудника</li>
+      </ul>
+    </article>
+    <article class="card rv" style="--d:.4s" tabindex="0">
+      <div class="idx">UNIT-06</div>
+      <h3>Автономный самосвал</h3>
+      <div class="role">Будущее — беспилотное</div>
+      <ul class="specs">
+        <li><b>0</b> человек в кабине</li>
+        <li><b>лидары + ГЛОНАСС</b> — навигация</li>
+        <li>уже в карьерах России</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     СЕКЦИЯ 4 — АЛРОСА
+     ═══════════════════════════════════════════════════════════════ -->
+<section class="section corners" id="alrosa">
+  <div class="sec-label rv">// SECTION 03 — АЛРОСА</div>
+  <h2 class="sec-title rv" style="--d:.08s">Целевое направление: АЛРОСА</h2>
+  <div class="alrosa">
+    <div class="diamond-wrap rv" style="--d:.1s" aria-hidden="true">
+      <!-- Алмаз: медленно вращается, грани с градиентными переливами -->
+      <svg viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="dg1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#e8fbff"/>
+            <stop offset=".5" stop-color="#59d8ff"/>
+            <stop offset="1" stop-color="#0e86c9"/>
+          </linearGradient>
+          <linearGradient id="dg2" x1="1" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#aef0ff"/>
+            <stop offset="1" stop-color="#1670b8"/>
+          </linearGradient>
+          <linearGradient id="dg3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffe3b0"/>
+            <stop offset="1" stop-color="#37b7e8"/>
+          </linearGradient>
+        </defs>
+        <!-- корона -->
+        <polygon points="60,60 100,40 140,60 100,74" fill="url(#dg3)"/>
+        <polygon points="40,74 60,60 100,74 70,86" fill="url(#dg2)"/>
+        <polygon points="160,74 140,60 100,74 130,86" fill="url(#dg1)"/>
+        <!-- павильон -->
+        <polygon points="40,74 70,86 100,166" fill="url(#dg1)"/>
+        <polygon points="70,86 100,74 130,86 100,166" fill="url(#dg2)"/>
+        <polygon points="130,86 160,74 100,166" fill="url(#dg3)"/>
+        <!-- рёбра -->
+        <g stroke="#eaffff" stroke-width="1" opacity=".55" fill="none">
+          <polyline points="40,74 100,74 160,74"/>
+          <polyline points="70,86 100,166 130,86"/>
+        </g>
+      </svg>
+    </div>
+    <ul class="facts">
+      <li class="rv" style="--d:.15s"><b>№1 в мире</b> по объёму добычи алмазов — около трети мирового рынка</li>
+      <li class="rv" style="--d:.25s">Месторождения <b>Якутии</b>: работа техники при −60 °C</li>
+      <li class="rv" style="--d:.35s">Подземные рудники <b>«Мир»</b> и <b>«Айхал»</b> — километр вглубь земли</li>
+      <li class="rv" style="--d:.45s"><b>Целевая подготовка инженеров</b> в НИТУ МИСИС: от аудитории — к карьеру</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     СЕКЦИЯ 5 — ФУТЕР
+     ═══════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="marquee" aria-hidden="true">
+    <!-- трек продублирован для бесшовного цикла -->
+    <div class="track">
+      <span>МЕХАНИКА <i class="dot">·</i> ГИДРАВЛИКА <i class="dot">·</i> АВТОМАТИЗАЦИЯ <i class="dot">·</i> ГОРНОЕ ДЕЛО <i class="dot">·</i>&nbsp;</span><span>МЕХАНИКА <i class="dot">·</i> ГИДРАВЛИКА <i class="dot">·</i> АВТОМАТИЗАЦИЯ <i class="dot">·</i> ГОРНОЕ ДЕЛО <i class="dot">·</i>&nbsp;</span>
+    </div>
+  </div>
+  <div class="foot-note">
+    НИТУ МИСИС <span class="ice">//</span> ГОРНЫЙ ИНСТИТУТ <span class="ice">//</span> ЦЕЛЕВОЕ НАПРАВЛЕНИЕ АЛРОСА
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   SPOTLIGHT REVEAL: лерп координат маски и гало в rAF.
+   Никаких изменений layout в mousemove — только запись целевых
+   координат; setProperty/transform выполняются в rAF-цикле.
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return; // сцена уже показана через CSS
+
+  var hero = document.getElementById('hero');
+  var halo = document.getElementById('halo');
+
+  var LERP = 0.12;          // коэффициент сглаживания
+  var R_ON = 220;           // радиус пятна, px
+  var tx = 0, ty = 0;       // целевые координаты
+  var cx = 0, cy = 0;       // текущие (лерпнутые)
+  var tr = 0, cr = 0;       // целевой/текущий радиус
+  var active = false;       // курсор/палец на hero
+  var hasPointer = false;   // было ли хоть одно реальное событие ввода
+  var t0 = performance.now();
+
+  // стартовая точка — центр горы
+  function resetCenter(){
+    tx = cx = hero.clientWidth * 0.42;
+    ty = cy = hero.clientHeight * 0.6;
+  }
+  resetCenter();
+
+  function setTarget(clientX, clientY){
+    var r = hero.getBoundingClientRect();
+    tx = clientX - r.left;
+    ty = clientY - r.top;
+  }
+
+  hero.addEventListener('mousemove', function(e){
+    hasPointer = true; active = true; tr = R_ON;
+    setTarget(e.clientX, e.clientY);
+  });
+  hero.addEventListener('mouseenter', function(e){
+    hasPointer = true; active = true; tr = R_ON;
+    setTarget(e.clientX, e.clientY);
+  });
+  // уход курсора — плавное схлопывание радиуса до 0 в rAF
+  hero.addEventListener('mouseleave', function(){
+    active = false; tr = 0;
+  });
+
+  // touch: свет следует за пальцем
+  hero.addEventListener('touchstart', function(e){
+    hasPointer = true; active = true; tr = R_ON;
+    setTarget(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:true});
+  hero.addEventListener('touchmove', function(e){
+    setTarget(e.touches[0].clientX, e.touches[0].clientY);
+  }, {passive:true});
+  hero.addEventListener('touchend', function(){
+    active = false; tr = 0;
+  });
+
+  window.addEventListener('resize', function(){
+    if (!hasPointer) resetCenter();
+  });
+
+  function frame(now){
+    // Автопилот: пока не было ввода — прожектор сам ездит по горе
+    if (!hasPointer){
+      var t = (now - t0) / 1000;
+      tr = R_ON;
+      tx = hero.clientWidth  * (0.5 + 0.32 * Math.sin(t * 0.35));
+      ty = hero.clientHeight * (0.58 + 0.10 * Math.sin(t * 0.23 + 1.7));
+    }
+
+    // лерп координат и радиуса
+    cx += (tx - cx) * LERP;
+    cy += (ty - cy) * LERP;
+    cr += (tr - cr) * (active || !hasPointer ? LERP : 0.08); // гаснет чуть медленнее
+
+    hero.style.setProperty('--mx', cx.toFixed(1) + 'px');
+    hero.style.setProperty('--my', cy.toFixed(1) + 'px');
+    hero.style.setProperty('--mr', Math.max(cr, 0).toFixed(1) + 'px');
+
+    // гало: только transform + opacity
+    halo.style.transform = 'translate(' + cx.toFixed(1) + 'px,' + cy.toFixed(1) + 'px)';
+    halo.style.opacity = (0.15 * cr / R_ON).toFixed(3);
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL REVEAL: IntersectionObserver добавляет .on
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var els = document.querySelectorAll('.rv');
+  if (!('IntersectionObserver' in window)){
+    els.forEach(function(el){ el.classList.add('on'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){
+        en.target.classList.add('on');
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold: 0.15});
+  els.forEach(function(el){ io.observe(el); });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   СЧЁТЧИКИ: анимация чисел от 0 при появлении в viewport
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var counters = document.querySelectorAll('.cnt');
+
+  function run(el){
+    var target = parseInt(el.dataset.target, 10);
+    if (reduced){ el.textContent = target.toLocaleString('ru-RU'); return; }
+    var dur = 1600, start = null;
+    function step(ts){
+      if (!start) start = ts;
+      var p = Math.min((ts - start) / dur, 1);
+      // ease-out cubic — числа замедляются к концу
+      var e = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * e).toLocaleString('ru-RU');
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  if (!('IntersectionObserver' in window)){
+    counters.forEach(function(el){ el.textContent = el.dataset.target; });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(en){
+      if (en.isIntersecting){
+        run(en.target);
+        io.unobserve(en.target);
+      }
+    });
+  }, {threshold: 0.4});
+  counters.forEach(function(el){ io.observe(el); });
+})();
+</script>
+</body>
+</html>
