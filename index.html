@@ -533,7 +533,11 @@ section{padding:100px 0}
     transform:translate(-50%,-50%);
   }
 }
-@media(pointer:coarse){.cursor-dot,.cursor-ring,.trail-dot{display:none}}
+@media(pointer:coarse){
+  .cursor-dot,.cursor-ring,.trail-dot{display:none}
+  .depth-slider::-webkit-slider-thumb{width:32px;height:32px}
+  .depth-slider::-moz-range-thumb{width:32px;height:32px}
+}
 
 /* ─── GRADIENT ANIMATION на заголовках ─── */
 h1.hero-title span,.section-title span{
@@ -614,6 +618,86 @@ h1.hero-title span,.section-title span{
   font-size:17px;margin-bottom:8px;color:var(--text);
 }
 .depth-info-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ─── DEPOSITS MAP ─── */
+#map{background:var(--bg)}
+.map-wrap{display:grid;grid-template-columns:1.5fr 1fr;gap:40px;align-items:start}
+.map-svg{
+  width:100%;height:auto;
+  background:linear-gradient(180deg,#101016,#0b0b10);
+  border:1px solid var(--border);border-radius:var(--r-card);
+}
+.map-land{fill:#16161f;stroke:rgba(255,255,255,.1);stroke-width:1.5}
+.map-point{cursor:pointer}
+.map-point circle.core{fill:var(--acc);transition:r .25s var(--ease)}
+.map-point circle.pulse{
+  fill:none;stroke:var(--acc);stroke-width:1.5;opacity:.6;
+  animation:mapPulse 2.4s ease-out infinite;
+  transform-origin:center;
+}
+@keyframes mapPulse{
+  0%{opacity:.7;r:6}
+  100%{opacity:0;r:22}
+}
+.map-point text{
+  fill:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;
+  pointer-events:none;
+}
+.map-point.active circle.core{fill:#ffd27d}
+.map-point.active text{fill:var(--text)}
+.map-info{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:28px;
+  position:sticky;top:88px;
+  transition:border-color .3s var(--ease);
+}
+.map-info.flash{border-color:var(--bacc)}
+.map-region{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--acc2);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.map-title{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:20px;margin-bottom:10px;color:var(--text);
+}
+.map-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.map-stat{
+  font-family:'JetBrains Mono',monospace;font-size:12.5px;
+  color:var(--acc);letter-spacing:.03em;
+}
+
+/* ─── DAY-IN-LIFE в карточках специальностей ─── */
+.day-list{
+  list-style:none;margin-top:16px;padding-top:14px;
+  border-top:1px dashed var(--border);
+}
+.day-list li{
+  font-size:12.5px;color:var(--muted);
+  padding:3px 0 3px 18px;position:relative;
+  opacity:0;transform:translateX(-8px);
+  transition:opacity .3s var(--ease),transform .3s var(--ease);
+}
+.day-list li::before{content:'▸';position:absolute;left:0;color:var(--acc);font-size:11px}
+.bento-card:hover .day-list li{opacity:1;transform:none}
+.bento-card:hover .day-list li:nth-child(2){transition-delay:.1s}
+.bento-card:hover .day-list li:nth-child(3){transition-delay:.2s}
+.day-label{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.2em;color:var(--acc2);text-transform:uppercase;
+  margin-top:16px;display:block;
+}
+@media(pointer:coarse){
+  .day-list li{opacity:1;transform:none}
+}
+
+/* ─── STEP STAT (цифры в шагах цикла) ─── */
+.step-stat{
+  margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--border);
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--acc);letter-spacing:.04em;
+}
 
 /* ─── QUIZ ─── */
 #quiz{background:var(--bg)}
@@ -740,6 +824,8 @@ footer{
   .depth-wrap{grid-template-columns:1fr}
   .depth-viz{height:320px}
   .quiz-box{padding:28px 20px}
+  .map-wrap{grid-template-columns:1fr}
+  .map-info{position:static}
   .about-grid{grid-template-columns:1fr}
   .adv-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr}
@@ -856,6 +942,12 @@ footer{
         <div class="card-title">Горное дело</div>
         <div class="card-desc">Открытые и подземные горные работы. Проектирование карьеров, шахт, систем вентиляции и безопасности.</div>
         <span class="card-tag">Бакалавриат · Магистратура</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Утро: обход уступов и проверка бортов карьера</li>
+          <li>День: расчёт параметров нового горизонта</li>
+          <li>Вечер: план горных работ на завтра</li>
+        </ul>
       </div>
 
       <div class="bento-card reveal" style="transition-delay:.07s">
@@ -865,6 +957,12 @@ footer{
         <div class="card-title">Взрывные технологии</div>
         <div class="card-desc">Безопасное применение взрывчатых веществ в горнодобывающей промышленности. Расчёты и моделирование.</div>
         <span class="card-tag">Специалитет</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Расчёт сетки скважин и массы заряда</li>
+          <li>Контроль заряжания и монтажа сети</li>
+          <li>Сирена, взрыв, замер сейсмики и осмотр забоя</li>
+        </ul>
       </div>
 
       <div class="bento-card reveal" style="transition-delay:.14s">
@@ -874,6 +972,12 @@ footer{
         <div class="card-title">Горная механика</div>
         <div class="card-desc">Проектирование и эксплуатация машин и оборудования для горных предприятий. Гидравлика, пневматика, автоматизация.</div>
         <span class="card-tag">Бакалавриат</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Диагностика гидравлики экскаватора</li>
+          <li>Плановое ТО конвейерной линии</li>
+          <li>Разбор телеметрии с датчиков машин</li>
+        </ul>
       </div>
 
       <div class="bento-card reveal" style="transition-delay:.21s">
@@ -883,6 +987,12 @@ footer{
         <div class="card-title">Геотехнологии</div>
         <div class="card-desc">Буровые системы, скважинные технологии, геомеханика. Работа с месторождениями нефти, газа и твёрдых полезных ископаемых.</div>
         <span class="card-tag">Бакалавриат · Магистратура</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Анализ каротажа пробуренной скважины</li>
+          <li>Подбор режима бурения под породу</li>
+          <li>3D-модель рудного тела в ПО геолога</li>
+        </ul>
       </div>
 
       <div class="bento-card reveal" style="transition-delay:.28s">
@@ -892,6 +1002,12 @@ footer{
         <div class="card-title">Горная электромеханика</div>
         <div class="card-desc">Энергетика горных предприятий. Электроснабжение, электроприводы, автоматизация технологических процессов.</div>
         <span class="card-tag">Бакалавриат</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Проверка подстанции и кабельных линий</li>
+          <li>Наладка частотного привода подъёмника</li>
+          <li>Схема электроснабжения нового участка</li>
+        </ul>
       </div>
 
       <div class="bento-card reveal" style="transition-delay:.35s">
@@ -901,6 +1017,12 @@ footer{
         <div class="card-title">Инновации и AI</div>
         <div class="card-desc">Цифровые двойники шахт, автоматизация горных машин, машинное обучение для прогнозирования геомеханических рисков.</div>
         <span class="card-tag">Магистратура</span>
+        <span class="day-label">// день инженера</span>
+        <ul class="day-list">
+          <li>Обучение модели прогноза обрушений</li>
+          <li>Калибровка цифрового двойника шахты</li>
+          <li>Тест маршрутов автономных самосвалов</li>
+        </ul>
       </div>
 
     </div>
@@ -921,6 +1043,7 @@ footer{
         </div>
         <div class="card-title">Разведка</div>
         <div class="card-desc">Геологи изучают породу керном скважин и сейсморазведкой, чтобы найти месторождение и оценить его запасы.</div>
+        <div class="step-stat">→ 5–10 лет от находки до первой руды</div>
       </div>
 
       <div class="step-card reveal" style="transition-delay:.06s">
@@ -930,6 +1053,7 @@ footer{
         </div>
         <div class="card-title">Бурение и взрыв</div>
         <div class="card-desc">Буровые станки формируют сетку скважин, в которые закладывают взрывчатку — она дробит монолитную породу на куски.</div>
+        <div class="step-stat">→ один взрыв дробит до 1 млн тонн породы</div>
       </div>
 
       <div class="step-card reveal" style="transition-delay:.12s">
@@ -939,6 +1063,7 @@ footer{
         <div class="step-num">03</div>
         <div class="card-title">Выемка породы</div>
         <div class="card-desc">Экскаваторы с ковшом в десятки кубометров зачерпывают раздробленную руду и грузят её в самосвалы.</div>
+        <div class="step-stat">→ ковш ЭКГ-18: 18 м³ ≈ 40 тонн за черпак</div>
       </div>
 
       <div class="step-card reveal" style="transition-delay:.18s">
@@ -948,6 +1073,7 @@ footer{
         </div>
         <div class="card-title">Транспортировка</div>
         <div class="card-desc">Карьерные самосвалы грузоподъёмностью до 450 тонн вывозят руду на поверхность или к обогатительной фабрике.</div>
+        <div class="step-stat">→ 450 т за рейс — как 7 вагонов угля</div>
       </div>
 
       <div class="step-card reveal" style="transition-delay:.24s">
@@ -957,6 +1083,7 @@ footer{
         </div>
         <div class="card-title">Обогащение</div>
         <div class="card-desc">Дробилки и сепараторы отделяют полезный минерал от пустой породы — так руда превращается в концентрат.</div>
+        <div class="step-stat">→ дробилка перерабатывает до 3 000 т/ч</div>
       </div>
 
       <div class="step-card reveal" style="transition-delay:.3s">
@@ -966,6 +1093,7 @@ footer{
         </div>
         <div class="card-title">Готовое сырьё</div>
         <div class="card-desc">Концентрат идёт на металлургический завод или огранку — и становится сталью, медью или бриллиантом.</div>
+        <div class="step-stat">→ из 100 т кимберлита — около 20 карат алмазов</div>
       </div>
 
     </div>
@@ -1035,6 +1163,67 @@ footer{
   </div>
 </section>
 
+<!-- DEPOSITS MAP -->
+<section id="map">
+  <div class="container">
+    <span class="section-label reveal">// География недр</span>
+    <h2 class="section-title reveal">Россия<br><span>на карте месторождений</span></h2>
+    <div class="map-wrap">
+
+      <svg class="map-svg reveal" viewBox="0 0 900 420" aria-label="Карта месторождений России">
+        <!-- стилизованный силуэт России -->
+        <path class="map-land" d="M60 185
+          L95 130 130 82 175 95 205 78 250 95 290 72 330 78 375 55 430 42
+          L470 62 520 48 570 66 620 50 680 62 740 48 800 58 838 72
+          L855 105 840 135 862 160 845 195 800 205 812 240 780 262 745 250
+          L760 292 720 305 675 282 645 295 600 280 555 300 520 302
+          L470 318 430 322 380 308 330 302 285 305 240 295 195 315 160 322
+          L130 300 105 268 78 240 62 212 Z"/>
+        <!-- Камчатка -->
+        <path class="map-land" d="M845 105 L878 132 885 175 868 205 848 188 858 150 Z"/>
+
+        <!-- точки месторождений -->
+        <g class="map-point active" data-dep="0" transform="translate(140,105)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Кольский</text>
+        </g>
+        <g class="map-point" data-dep="1" transform="translate(165,245)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">КМА</text>
+        </g>
+        <g class="map-point" data-dep="2" transform="translate(265,235)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Урал</text>
+        </g>
+        <g class="map-point" data-dep="3" transform="translate(430,290)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Кузбасс</text>
+        </g>
+        <g class="map-point" data-dep="4" transform="translate(440,120)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Норильск</text>
+        </g>
+        <g class="map-point" data-dep="5" transform="translate(600,170)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Якутия</text>
+        </g>
+        <g class="map-point" data-dep="6" transform="translate(745,120)">
+          <circle class="pulse" r="6"/><circle class="core" r="6"/>
+          <text x="12" y="4">Колыма</text>
+        </g>
+      </svg>
+
+      <div class="map-info reveal" id="map-info" style="transition-delay:.1s">
+        <div class="map-region" id="map-region">Мурманская область</div>
+        <div class="map-title" id="map-title">Кольский полуостров — апатиты</div>
+        <div class="map-desc" id="map-desc">Крупнейшие в мире запасы апатит-нефелиновых руд — сырья для фосфорных удобрений. Здесь же находится Кольская сверхглубокая скважина.</div>
+        <div class="map-stat" id="map-stat">→ добыча с 1929 года</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- EQUIPMENT SHOWCASE -->
 <section id="tech">
   <div class="container">
@@ -1089,7 +1278,7 @@ footer{
           <rect x="86" y="14" width="12" height="90" fill="#20202a"/>
           <path d="M86 14L98 14 92 2Z" fill="#20202a"/>
           <line x1="92" y1="30" x2="92" y2="88" stroke="#3a3a45" stroke-width="2"/>
-          <circle cx="92" cy="8" r="4" fill="#7fd8ff" style="filter:drop-shadow(0 0 6px #00d4ff)"/>
+          <circle cx="92" cy="8" r="4" fill="#ffd27d" style="filter:drop-shadow(0 0 6px #FF8C00)"/>
           <rect x="60" y="74" width="20" height="14" rx="2" fill="#1c1c24"/>
           <circle cx="66" cy="80" r="3" fill="#ffcf7d" style="filter:drop-shadow(0 0 5px #FF8C00)"/>
         </svg>
@@ -1325,9 +1514,10 @@ footer{
         <h4>Сайт</h4>
         <ul class="footer-links">
           <li><a href="#process">Как добывают</a></li>
-          <li><a href="#programs">Специальности</a></li>
+          <li><a href="#map">Карта месторождений</a></li>
           <li><a href="#tech">Техника</a></li>
-          <li><a href="#facts">Факты</a></li>
+          <li><a href="#depth">Шкала глубины</a></li>
+          <li><a href="#quiz">Викторина</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -1379,7 +1569,17 @@ footer{
   init();
   window.addEventListener('resize',init);
 
+  var heroVisible = true;
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(entries){
+      var was = heroVisible;
+      heroVisible = entries[0].isIntersecting;
+      if(heroVisible && !was) requestAnimationFrame(draw); // возобновить
+    },{threshold:0}).observe(canvas);
+  }
+
   function draw(){
+    if(!heroVisible) return; // пауза, когда hero вне экрана
     ctx.clearRect(0,0,W,H);
     for(var i=0;i<pts.length;i++){
       var p=pts[i];
@@ -1531,7 +1731,7 @@ function switchMethod(method){
   document.body.appendChild(dot); document.body.appendChild(ring);
 
   // след: пул из 12 переиспользуемых точек
-  var TRAIL = 12, trail = [];
+  var TRAIL = 8, trail = [];
   for(var i=0;i<TRAIL;i++){
     var t = document.createElement('div');
     t.className='trail-dot'; t.style.opacity='0';
@@ -1565,7 +1765,7 @@ function switchMethod(method){
       var t=trail[i];
       t.x += (px-t.x)*0.35; t.y += (py-t.y)*0.35;
       t.el.style.transform='translate('+t.x+'px,'+t.y+'px) translate(-50%,-50%)';
-      t.el.style.opacity=(1-i/TRAIL)*0.35;
+      t.el.style.opacity=(1-i/TRAIL)*0.22;
       t.el.style.width=t.el.style.height=(5-i*0.3)+'px';
       px=t.x; py=t.y;
     }
@@ -1623,13 +1823,13 @@ function switchMethod(method){
     {m:0,     top:4,  title:'Поверхность',
      desc:'Отсюда всё начинается: геологоразведка, буровые вышки и первый вскрышной уступ будущего карьера.'},
     {m:500,   top:20, title:'Дно глубокого карьера',
-     desc:'Предел рентабельности открытой добычи. Алмазный карьер «Мир» в Якутии достиг 525 м — дальше только под землю.'},
+     desc:'Предел рентабельности открытой добычи. Алмазный карьер «Мир» в Якутии достиг 525 м — дальше только под землю. Это глубина, в которую целиком поместится Останкинская башня.'},
     {m:1200,  top:36, title:'Глубина подземных рудников России',
-     desc:'Здесь работают шахтные подъёмники, вентиляция и системы охлаждения: температура породы растёт на ~3 °C каждые 100 м.'},
+     desc:'Здесь работают шахтные подъёмники, вентиляция и системы охлаждения: температура породы растёт на ~3 °C каждые 100 м. Глубже, чем высота Бурдж-Халифы (828 м).'},
     {m:4000,  top:56, title:'Самые глубокие шахты мира',
-     desc:'Золотые рудники ЮАР (Мпоненг) — почти 4 км. Породы на такой глубине сжаты настолько, что могут «стрелять» осколками.'},
+     desc:'Золотые рудники ЮАР (Мпоненг) — почти 4 км: 13 Эйфелевых башен, поставленных друг на друга. Породы здесь сжаты так, что «стреляют» осколками.'},
     {m:12262, top:78, title:'Кольская сверхглубокая скважина',
-     desc:'Самая глубокая скважина в истории человечества. Пробурена в СССР за 20 лет. Глубже человек не проникал никогда.'}
+     desc:'Самая глубокая скважина в истории человечества, пробурена в СССР за 20 лет. И всё же это лишь 0,2% пути до центра Земли.'}
   ];
   var slider = document.getElementById('depth-slider');
   var num = document.getElementById('depth-num');
@@ -1665,7 +1865,7 @@ function switchMethod(method){
 })();
 
 /* ═══════════ QUIZ ═══════════ */
-var quizData = [
+var quizPool = [
   {q:'Какой минерал самый твёрдый на Земле?',
    opts:['Кварц','Алмаз','Топаз','Корунд'], a:1},
   {q:'Сколько тонн груза перевозит БелАЗ-75710 за один рейс?',
@@ -1675,8 +1875,27 @@ var quizData = [
   {q:'Как называется самая глубокая скважина, пробурённая человеком?',
    opts:['Марианская','Кольская сверхглубокая','Сибирская глубинная','Уральская опорная'], a:1},
   {q:'Из чего добывают алмазы?',
-   opts:['Из гранита','Из кимберлитовых трубок','Из известняка','Из песчаника'], a:1}
+   opts:['Из гранита','Из кимберлитовых трубок','Из известняка','Из песчаника'], a:1},
+  {q:'На сколько градусов теплеет порода с каждыми 100 метрами глубины?',
+   opts:['~0,5 °C','~3 °C','~10 °C','Не меняется'], a:1},
+  {q:'Что такое «вскрыша» в горном деле?',
+   opts:['Верхний слой пустой породы над рудой','Вход в шахту','Взрывная скважина','Крыша подземной выработки'], a:0},
+  {q:'Каким способом добывают уголь в Кузбассе?',
+   opts:['Только шахтами','Только разрезами','И разрезами, и шахтами','Скважинами'], a:2},
+  {q:'Какой металл добывают в Норильске?',
+   opts:['Золото','Никель и медь','Алюминий','Олово'], a:1},
+  {q:'Зачем шахте мощная вентиляция?',
+   opts:['Для охлаждения техники','Чтобы удалять газы и подавать воздух людям','Для подъёма руды','Только от пыли'], a:1}
 ];
+function quizSample(){
+  var arr = quizPool.slice();
+  for(var i=arr.length-1;i>0;i--){
+    var j=Math.floor(Math.random()*(i+1));
+    var t=arr[i];arr[i]=arr[j];arr[j]=t;
+  }
+  return arr.slice(0,5);
+}
+var quizData = quizSample();
 var quizIdx = 0, quizScore = 0, quizAnswered = false;
 
 function quizRender(){
@@ -1725,12 +1944,56 @@ function quizNext(){
   document.getElementById('quiz-verdict').textContent = verdicts[quizScore];
 }
 function quizRestart(){
+  quizData = quizSample();
   quizIdx = 0; quizScore = 0;
   document.getElementById('quiz-result').classList.remove('show');
   document.getElementById('quiz-game').style.display='';
   quizRender();
 }
 quizRender();
+
+/* ═══════════ DEPOSITS MAP ═══════════ */
+(function(){
+  var deposits = [
+    {region:'Мурманская область', title:'Кольский полуостров — апатиты',
+     desc:'Крупнейшие в мире запасы апатит-нефелиновых руд — сырья для фосфорных удобрений. Здесь же находится Кольская сверхглубокая скважина.',
+     stat:'→ добыча с 1929 года'},
+    {region:'Курская и Белгородская области', title:'КМА — железная руда',
+     desc:'Курская магнитная аномалия — самый мощный железорудный бассейн планеты. Залежи настолько велики, что искажают магнитное поле Земли.',
+     stat:'→ более половины железной руды России'},
+    {region:'Уральские горы', title:'Урал — медь и малахит',
+     desc:'Старейший горнопромышленный район страны: медь, магнезит, бокситы и знаменитые уральские самоцветы. Добыча ведётся с XVIII века.',
+     stat:'→ 300 лет непрерывной добычи'},
+    {region:'Кемеровская область', title:'Кузбасс — уголь',
+     desc:'Кузнецкий угольный бассейн даёт больше половины всего угля России. Работают и гигантские разрезы, и глубокие шахты.',
+     stat:'→ ~200 млн тонн угля в год'},
+    {region:'Красноярский край', title:'Норильск — никель и медь',
+     desc:'Богатейшие в мире залежи медно-никелевых руд за Полярным кругом. Рудники работают при морозах до −50 °C и полярной ночи.',
+     stat:'→ рудник «Скалистый»: глубина 2 км'},
+    {region:'Республика Саха (Якутия)', title:'Якутия — алмазы',
+     desc:'Кимберлитовые трубки «Мир», «Удачная», «Айхал». Около четверти мировой добычи алмазов — из вечной мерзлоты Якутии.',
+     stat:'→ ~25% мировой добычи алмазов'},
+    {region:'Магаданская область', title:'Колыма — золото',
+     desc:'Золотоносные россыпи и рудные месторождения Северо-Востока. Драги промывают тонны породы ради граммов золота.',
+     stat:'→ 1 г золота из тонны породы — уже богатая руда'}
+  ];
+  var info = document.getElementById('map-info');
+  if(!info) return;
+  document.querySelectorAll('.map-point').forEach(function(pt){
+    pt.addEventListener('click',function(){
+      var d = deposits[+pt.dataset.dep];
+      document.querySelectorAll('.map-point').forEach(function(p){p.classList.remove('active')});
+      pt.classList.add('active');
+      document.getElementById('map-region').textContent = d.region;
+      document.getElementById('map-title').textContent = d.title;
+      document.getElementById('map-desc').textContent = d.desc;
+      document.getElementById('map-stat').textContent = d.stat;
+      info.classList.remove('flash');
+      void info.offsetWidth;
+      info.classList.add('flash');
+    });
+  });
+})();
 </script>
 </body>
 </html>
