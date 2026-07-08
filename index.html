@@ -495,6 +495,177 @@ section{padding:100px 0}
 .mineral-fact{font-size:13.5px;color:var(--muted);line-height:1.55}
 .mineral-fact b{color:var(--acc)}
 
+/* ─── CUSTOM CURSOR ─── */
+@media(pointer:fine){
+  body{cursor:none}
+  a,button,.mineral-card,.method-tab{cursor:none}
+  .cursor-dot{
+    position:fixed;top:0;left:0;z-index:9999;
+    width:8px;height:8px;border-radius:50%;
+    background:var(--acc);
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    transition:width .2s,height .2s,background .2s;
+  }
+  .cursor-ring{
+    position:fixed;top:0;left:0;z-index:9998;
+    width:36px;height:36px;border-radius:50%;
+    border:1px solid rgba(255,140,0,.5);
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+    transition:width .25s,height .25s,border-color .25s;
+  }
+  body.cursor-hover .cursor-dot{width:12px;height:12px;background:#ffd27d}
+  body.cursor-hover .cursor-ring{width:52px;height:52px;border-color:rgba(255,140,0,.9)}
+  .trail-dot{
+    position:fixed;top:0;left:0;z-index:9997;
+    width:5px;height:5px;border-radius:50%;
+    background:rgba(255,160,40,.5);
+    pointer-events:none;
+    transform:translate(-50%,-50%);
+  }
+}
+@media(pointer:coarse){.cursor-dot,.cursor-ring,.trail-dot{display:none}}
+
+/* ─── GRADIENT ANIMATION на заголовках ─── */
+h1.hero-title span,.section-title span{
+  background:linear-gradient(120deg,var(--acc),#ffd27d,var(--acc2),var(--acc));
+  background-size:300% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:gradShift 6s ease infinite;
+}
+@keyframes gradShift{
+  0%,100%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+}
+
+/* ─── DEPTH SCALE (интерактивная шкала глубины) ─── */
+#depth{background:var(--bg2)}
+.depth-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:56px;align-items:start}
+.depth-viz{
+  position:relative;height:480px;border-radius:var(--r-card);
+  background:linear-gradient(180deg,#1a2233 0%,#141821 12%,#12141c 30%,#0e0f15 60%,#0a0a10 100%);
+  border:1px solid var(--border);overflow:hidden;
+}
+.depth-line{
+  position:absolute;left:0;right:0;height:1px;
+  background:rgba(255,255,255,.07);
+}
+.depth-line span{
+  position:absolute;right:10px;top:-18px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);
+}
+.depth-marker{
+  position:absolute;left:0;right:0;height:2px;
+  background:var(--acc);
+  box-shadow:0 0 16px rgba(255,140,0,.6);
+  transition:top .3s var(--ease);
+}
+.depth-marker::after{
+  content:'';position:absolute;left:16px;top:-5px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--acc);
+  box-shadow:0 0 12px rgba(255,140,0,.8);
+}
+.depth-controls{padding-top:8px}
+.depth-value{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(40px,5vw,64px);color:var(--acc);line-height:1;
+  margin-bottom:6px;
+  font-variant-numeric:tabular-nums;
+}
+.depth-value .unit{font-size:.5em;color:var(--acc2)}
+.depth-slider{
+  width:100%;margin:28px 0 32px;
+  -webkit-appearance:none;appearance:none;
+  height:4px;border-radius:2px;
+  background:linear-gradient(to right,var(--acc) 0%,var(--acc) 0%,rgba(255,255,255,.1) 0%);
+  outline:none;
+}
+.depth-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--acc);border:3px solid #0A0A0F;
+  box-shadow:0 0 16px rgba(255,140,0,.6);
+  cursor:pointer;
+}
+.depth-slider::-moz-range-thumb{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--acc);border:3px solid #0A0A0F;
+  box-shadow:0 0 16px rgba(255,140,0,.6);cursor:pointer;
+}
+.depth-info{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:24px;
+  min-height:130px;
+  transition:border-color .3s var(--ease);
+}
+.depth-info-title{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:17px;margin-bottom:8px;color:var(--text);
+}
+.depth-info-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ─── QUIZ ─── */
+#quiz{background:var(--bg)}
+.quiz-box{
+  max-width:640px;margin:0 auto;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:40px;
+  backdrop-filter:blur(8px);
+}
+.quiz-progress{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--acc2);letter-spacing:.15em;
+  margin-bottom:20px;
+}
+.quiz-q{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:20px;line-height:1.4;margin-bottom:28px;color:var(--text);
+}
+.quiz-opts{display:flex;flex-direction:column;gap:12px}
+.quiz-opt{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);border-radius:var(--r-btn);
+  padding:15px 20px;text-align:left;
+  color:var(--text);font-family:'Inter',sans-serif;font-size:15px;
+  cursor:pointer;
+  transition:border-color .25s var(--ease),background .25s var(--ease),transform .15s var(--ease);
+}
+.quiz-opt:hover{border-color:var(--bacc);background:rgba(255,140,0,.06);transform:translateX(4px)}
+.quiz-opt.correct{border-color:#3dbd6e;background:rgba(61,189,110,.12)}
+.quiz-opt.wrong{border-color:#d64545;background:rgba(214,69,69,.1)}
+.quiz-opt:disabled{cursor:default;transform:none}
+.quiz-next{
+  margin-top:24px;
+  background:var(--acc);color:#000;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:14px;
+  padding:12px 28px;border-radius:var(--r-btn);
+  border:none;cursor:pointer;
+  transition:box-shadow .3s var(--ease),opacity .3s;
+  opacity:0;pointer-events:none;
+}
+.quiz-next.show{opacity:1;pointer-events:auto}
+.quiz-next:hover{box-shadow:0 0 24px rgba(255,140,0,.4)}
+.quiz-result{
+  text-align:center;display:none;
+}
+.quiz-result.show{display:block}
+.quiz-score{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:56px;color:var(--acc);margin-bottom:12px;
+}
+.quiz-verdict{font-size:16px;color:var(--muted);margin-bottom:28px}
+.quiz-restart{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border);border-radius:var(--r-btn);
+  font-family:'Syne',sans-serif;font-weight:600;font-size:14px;
+  padding:12px 28px;cursor:pointer;
+  transition:border-color .3s var(--ease);
+}
+.quiz-restart:hover{border-color:var(--bacc)}
+
 /* ─── FOOTER ─── */
 footer{
   background:var(--bg2);
@@ -558,6 +729,9 @@ footer{
   .mineral-grid{grid-template-columns:1fr 1fr}
   .method-panel.active{grid-template-columns:1fr}
   .method-tabs{flex-wrap:wrap}
+  .depth-wrap{grid-template-columns:1fr}
+  .depth-viz{height:320px}
+  .quiz-box{padding:28px 20px}
   .about-grid{grid-template-columns:1fr}
   .adv-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr}
@@ -592,7 +766,8 @@ footer{
     <li><a href="#programs">Специальности</a></li>
     <li><a href="#tech">Техника</a></li>
     <li><a href="#minerals">Ископаемые</a></li>
-    <li><a href="#facts">Факты</a></li>
+    <li><a href="#depth">Глубина</a></li>
+    <li><a href="#quiz">Викторина</a></li>
   </ul>
   <a href="https://misis.ru/university/struktura-universiteta/instituty/gi/for-applicants/" class="nav-cta" target="_blank" rel="noopener">Поступить</a>
   <button class="burger" id="burger" aria-label="Меню">
@@ -1013,6 +1188,35 @@ footer{
   </div>
 </section>
 
+<!-- DEPTH SCALE -->
+<section id="depth">
+  <div class="container">
+    <span class="section-label reveal">// Интерактив</span>
+    <h2 class="section-title reveal">Насколько глубоко<br><span>уходит человек</span></h2>
+    <div class="depth-wrap">
+
+      <div class="depth-viz reveal" id="depth-viz">
+        <div class="depth-line" style="top:4%"><span>0 м</span></div>
+        <div class="depth-line" style="top:20%"><span>−500 м</span></div>
+        <div class="depth-line" style="top:36%"><span>−1 200 м</span></div>
+        <div class="depth-line" style="top:56%"><span>−4 000 м</span></div>
+        <div class="depth-line" style="top:78%"><span>−12 262 м</span></div>
+        <div class="depth-marker" id="depth-marker" style="top:4%"></div>
+      </div>
+
+      <div class="depth-controls reveal" style="transition-delay:.1s">
+        <div class="depth-value"><span id="depth-num">0</span><span class="unit"> м</span></div>
+        <input type="range" class="depth-slider" id="depth-slider" min="0" max="4" step="1" value="0" aria-label="Глубина"/>
+        <div class="depth-info" id="depth-info">
+          <div class="depth-info-title" id="depth-title">Поверхность</div>
+          <div class="depth-info-desc" id="depth-desc">Отсюда всё начинается: геологоразведка, буровые вышки и первый вскрышной уступ будущего карьера.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- FACTS -->
 <section id="facts">
   <div class="container">
@@ -1054,6 +1258,27 @@ footer{
           <div class="adv-title">Карьеры водят себя сами</div>
           <div class="adv-desc">В российских карьерах уже работают беспилотные самосвалы: маршрут, скорость и разгрузку они рассчитывают без водителя.</div>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="container">
+    <span class="section-label reveal" style="text-align:center;display:block">// Проверьте себя</span>
+    <h2 class="section-title reveal" style="text-align:center">Викторина<br><span>горного инженера</span></h2>
+    <div class="quiz-box reveal">
+      <div id="quiz-game">
+        <div class="quiz-progress" id="quiz-progress">ВОПРОС 1 / 5</div>
+        <div class="quiz-q" id="quiz-q"></div>
+        <div class="quiz-opts" id="quiz-opts"></div>
+        <button class="quiz-next" id="quiz-next" onclick="quizNext()">Дальше →</button>
+      </div>
+      <div class="quiz-result" id="quiz-result">
+        <div class="quiz-score" id="quiz-score">0/5</div>
+        <div class="quiz-verdict" id="quiz-verdict"></div>
+        <button class="quiz-restart" onclick="quizRestart()">Пройти ещё раз</button>
       </div>
     </div>
   </div>
@@ -1266,6 +1491,210 @@ function switchMethod(method){
     panel.classList.toggle('active', panel.id === 'panel-' + method);
   });
 }
+
+/* ═══════════ CUSTOM CURSOR + TRAIL ═══════════ */
+(function(){
+  if(window.matchMedia('(pointer:coarse)').matches) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var dot = document.createElement('div'); dot.className='cursor-dot';
+  var ring = document.createElement('div'); ring.className='cursor-ring';
+  document.body.appendChild(dot); document.body.appendChild(ring);
+
+  // след: пул из 12 переиспользуемых точек
+  var TRAIL = 12, trail = [];
+  for(var i=0;i<TRAIL;i++){
+    var t = document.createElement('div');
+    t.className='trail-dot'; t.style.opacity='0';
+    document.body.appendChild(t);
+    trail.push({el:t, x:0, y:0});
+  }
+
+  var mx=-100, my=-100, rx=-100, ry=-100;
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+  });
+  // hover-состояние над интерактивными элементами
+  document.addEventListener('mouseover',function(e){
+    if(e.target.closest('a,button,.mineral-card,.method-tab,input'))
+      document.body.classList.add('cursor-hover');
+  });
+  document.addEventListener('mouseout',function(e){
+    if(e.target.closest('a,button,.mineral-card,.method-tab,input'))
+      document.body.classList.remove('cursor-hover');
+  });
+
+  var frame = 0;
+  function loop(){
+    dot.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';
+    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+    ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';
+
+    // сдвигаем след: каждая точка догоняет предыдущую
+    var px=mx, py=my;
+    for(var i=0;i<TRAIL;i++){
+      var t=trail[i];
+      t.x += (px-t.x)*0.35; t.y += (py-t.y)*0.35;
+      t.el.style.transform='translate('+t.x+'px,'+t.y+'px) translate(-50%,-50%)';
+      t.el.style.opacity=(1-i/TRAIL)*0.35;
+      t.el.style.width=t.el.style.height=(5-i*0.3)+'px';
+      px=t.x; py=t.y;
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ═══════════ HERO PARALLAX ═══════════ */
+(function(){
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var heroContent = document.querySelector('.hero-content');
+  var canvas = document.getElementById('particles');
+  var ticking = false;
+  window.addEventListener('scroll',function(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var y = window.scrollY;
+      if(y < window.innerHeight){
+        heroContent.style.transform='translateY('+(y*0.35)+'px)';
+        heroContent.style.opacity=1-(y/(window.innerHeight*0.85));
+        if(canvas) canvas.style.transform='translateY('+(y*0.18)+'px)';
+      }
+      ticking = false;
+    });
+  },{passive:true});
+})();
+
+/* ═══════════ 3D TILT на карточках техники ═══════════ */
+(function(){
+  document.querySelectorAll('.machine-card').forEach(function(card){
+    card.addEventListener('mousemove',function(e){
+      var r=card.getBoundingClientRect();
+      var x=(e.clientX-r.left)/r.width-.5;
+      var y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform='perspective(900px) rotateX('+(-y*8)+'deg) rotateY('+(x*8)+'deg) translateY(-4px)';
+    });
+    card.addEventListener('mouseleave',function(){
+      card.style.transform='';
+    });
+  });
+})();
+
+/* ═══════════ DEPTH SCALE ═══════════ */
+(function(){
+  var stops = [
+    {m:0,     top:4,  title:'Поверхность',
+     desc:'Отсюда всё начинается: геологоразведка, буровые вышки и первый вскрышной уступ будущего карьера.'},
+    {m:500,   top:20, title:'Дно глубокого карьера',
+     desc:'Предел рентабельности открытой добычи. Алмазный карьер «Мир» в Якутии достиг 525 м — дальше только под землю.'},
+    {m:1200,  top:36, title:'Глубина подземных рудников России',
+     desc:'Здесь работают шахтные подъёмники, вентиляция и системы охлаждения: температура породы растёт на ~3 °C каждые 100 м.'},
+    {m:4000,  top:56, title:'Самые глубокие шахты мира',
+     desc:'Золотые рудники ЮАР (Мпоненг) — почти 4 км. Породы на такой глубине сжаты настолько, что могут «стрелять» осколками.'},
+    {m:12262, top:78, title:'Кольская сверхглубокая скважина',
+     desc:'Самая глубокая скважина в истории человечества. Пробурена в СССР за 20 лет. Глубже человек не проникал никогда.'}
+  ];
+  var slider = document.getElementById('depth-slider');
+  var num = document.getElementById('depth-num');
+  var marker = document.getElementById('depth-marker');
+  var title = document.getElementById('depth-title');
+  var desc = document.getElementById('depth-desc');
+  if(!slider) return;
+
+  var currentAnim = null;
+  function setDepth(i){
+    var s = stops[i];
+    marker.style.top = s.top + '%';
+    title.textContent = s.title;
+    desc.textContent = s.desc;
+    // анимация числа
+    var from = parseInt(num.textContent.replace(/\D/g,''),10)||0;
+    var to = s.m, t0 = null, dur = 500;
+    if(currentAnim) cancelAnimationFrame(currentAnim);
+    function step(ts){
+      if(!t0) t0=ts;
+      var p = Math.min((ts-t0)/dur,1);
+      var e = 1-Math.pow(1-p,3);
+      num.textContent = Math.round(from+(to-from)*e).toLocaleString('ru-RU');
+      if(p<1) currentAnim = requestAnimationFrame(step);
+    }
+    currentAnim = requestAnimationFrame(step);
+    // заливка трека
+    var pct = i/(stops.length-1)*100;
+    slider.style.background='linear-gradient(to right,var(--acc) '+pct+'%,rgba(255,255,255,.1) '+pct+'%)';
+  }
+  slider.addEventListener('input',function(){ setDepth(+slider.value); });
+  setDepth(0);
+})();
+
+/* ═══════════ QUIZ ═══════════ */
+var quizData = [
+  {q:'Какой минерал самый твёрдый на Земле?',
+   opts:['Кварц','Алмаз','Топаз','Корунд'], a:1},
+  {q:'Сколько тонн груза перевозит БелАЗ-75710 за один рейс?',
+   opts:['150 тонн','300 тонн','450 тонн','600 тонн'], a:2},
+  {q:'С какой глубины обычно переходят от карьера к подземной добыче?',
+   opts:['50–100 м','300–500 м','2 000 м','5 000 м'], a:1},
+  {q:'Как называется самая глубокая скважина, пробурённая человеком?',
+   opts:['Марианская','Кольская сверхглубокая','Сибирская глубинная','Уральская опорная'], a:1},
+  {q:'Из чего добывают алмазы?',
+   opts:['Из гранита','Из кимберлитовых трубок','Из известняка','Из песчаника'], a:1}
+];
+var quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function quizRender(){
+  var d = quizData[quizIdx];
+  document.getElementById('quiz-progress').textContent = 'ВОПРОС ' + (quizIdx+1) + ' / ' + quizData.length;
+  document.getElementById('quiz-q').textContent = d.q;
+  var box = document.getElementById('quiz-opts');
+  box.innerHTML = '';
+  d.opts.forEach(function(opt,i){
+    var b = document.createElement('button');
+    b.className='quiz-opt';
+    b.textContent=opt;
+    b.onclick=function(){ quizAnswer(i,b); };
+    box.appendChild(b);
+  });
+  document.getElementById('quiz-next').classList.remove('show');
+  quizAnswered = false;
+}
+function quizAnswer(i,btn){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  var d = quizData[quizIdx];
+  var opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(function(o){ o.disabled=true; });
+  if(i===d.a){ btn.classList.add('correct'); quizScore++; }
+  else{ btn.classList.add('wrong'); opts[d.a].classList.add('correct'); }
+  var next = document.getElementById('quiz-next');
+  next.textContent = quizIdx < quizData.length-1 ? 'Дальше →' : 'Результат →';
+  next.classList.add('show');
+}
+function quizNext(){
+  quizIdx++;
+  if(quizIdx < quizData.length){ quizRender(); return; }
+  document.getElementById('quiz-game').style.display='none';
+  var res = document.getElementById('quiz-result');
+  res.classList.add('show');
+  document.getElementById('quiz-score').textContent = quizScore + '/' + quizData.length;
+  var verdicts = [
+    'Пока новичок — полистайте сайт ещё раз!',
+    'Неплохое начало, но есть куда копать.',
+    'Крепкий середняк — порода поддаётся!',
+    'Отличный результат! Почти инженер.',
+    'Солидно! Вам пора на месторождение.',
+    'Максимум! Настоящий горный инженер.'
+  ];
+  document.getElementById('quiz-verdict').textContent = verdicts[quizScore];
+}
+function quizRestart(){
+  quizIdx = 0; quizScore = 0;
+  document.getElementById('quiz-result').classList.remove('show');
+  document.getElementById('quiz-game').style.display='';
+  quizRender();
+}
+quizRender();
 </script>
 </body>
 </html>
