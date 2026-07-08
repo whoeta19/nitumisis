@@ -85,6 +85,14 @@ nav.scrolled{background:rgba(10,10,15,0.92)}
   overflow:hidden;
 }
 #particles{position:absolute;inset:0;width:100%;height:100%}
+.mountains{
+  position:absolute;left:0;right:0;bottom:0;
+  width:100%;height:auto;
+  pointer-events:none;
+  will-change:transform;
+}
+.m-back{opacity:.85}
+.m-mid{opacity:.95}
 .hero-spotlight{
   position:absolute;inset:0;pointer-events:none;
   background:radial-gradient(600px at 50% 50%,rgba(255,140,0,0.06),transparent 70%);
@@ -778,6 +786,27 @@ footer{
 <!-- HERO -->
 <section id="hero">
   <canvas id="particles"></canvas>
+
+  <!-- ГОРЫ: три слоя силуэтов, параллакс с разной скоростью -->
+  <svg class="mountains m-back" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path fill="#101018" d="M0 320L0 190 140 120 280 200 430 90 580 210 720 130 880 220 1020 100 1180 200 1320 140 1440 190 1440 320Z"/>
+  </svg>
+  <svg class="mountains m-mid" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path fill="#15151f" d="M0 320L0 230 120 160 260 240 400 130 560 250 700 170 860 260 1000 150 1160 245 1300 185 1440 235 1440 320Z"/>
+    <path fill="none" stroke="rgba(255,140,0,.25)" stroke-width="1.5" d="M0 230 120 160 260 240 400 130 560 250 700 170 860 260 1000 150 1160 245 1300 185 1440 235"/>
+  </svg>
+  <svg class="mountains m-front" viewBox="0 0 1440 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+    <path fill="#0c0c12" d="M0 320L0 270 180 200 340 280 520 180 700 290 900 210 1080 285 1260 225 1440 275 1440 320Z"/>
+    <!-- уступы карьера на переднем склоне -->
+    <g stroke="rgba(255,140,0,.4)" stroke-width="1">
+      <line x1="470" y1="215" x2="580" y2="215"/>
+      <line x1="440" y1="245" x2="620" y2="245"/>
+      <line x1="410" y1="275" x2="660" y2="275"/>
+    </g>
+    <circle cx="595" cy="212" r="2.4" fill="#ffcf7d" style="filter:drop-shadow(0 0 5px #FF8C00)"/>
+    <circle cx="635" cy="242" r="2.4" fill="#ffcf7d" style="filter:drop-shadow(0 0 5px #FF8C00)"/>
+  </svg>
+
   <div class="hero-spotlight" id="spotlight"></div>
   <div class="hero-content">
     <div class="hero-badge">Горный институт · НИТУ МИСИС</div>
@@ -1550,6 +1579,9 @@ function switchMethod(method){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   var heroContent = document.querySelector('.hero-content');
   var canvas = document.getElementById('particles');
+  var mBack = document.querySelector('.m-back');
+  var mMid = document.querySelector('.m-mid');
+  var mFront = document.querySelector('.m-front');
   var ticking = false;
   window.addEventListener('scroll',function(){
     if(ticking) return;
@@ -1560,6 +1592,10 @@ function switchMethod(method){
         heroContent.style.transform='translateY('+(y*0.35)+'px)';
         heroContent.style.opacity=1-(y/(window.innerHeight*0.85));
         if(canvas) canvas.style.transform='translateY('+(y*0.18)+'px)';
+        // горы: задние двигаются медленнее передних — глубина
+        if(mBack)  mBack.style.transform ='translateY('+(y*0.10)+'px)';
+        if(mMid)   mMid.style.transform  ='translateY('+(y*0.05)+'px)';
+        if(mFront) mFront.style.transform='translateY(0px)';
       }
       ticking = false;
     });
