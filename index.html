@@ -267,6 +267,34 @@ section{padding:100px 0}
   font-size:11px;color:var(--acc2);letter-spacing:.08em;
 }
 
+/* ─── PROCESS STEPS ─── */
+#process{background:var(--bg2);position:relative}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:16px;
+  position:relative;
+}
+.step-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r-card);
+  padding:32px;
+  position:relative;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease),transform .3s var(--ease);
+}
+.step-card:hover{
+  border-color:var(--bacc);
+  transform:translateY(-3px);
+  box-shadow:0 0 28px rgba(255,140,0,0.1);
+}
+.step-num{
+  position:absolute;top:20px;right:24px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:13px;color:var(--muted);letter-spacing:.1em;
+}
+.step-card .card-icon{margin-bottom:18px}
+
 /* ─── ABOUT / TIMELINE ─── */
 #about{background:var(--bg2)}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
@@ -322,6 +350,42 @@ section{padding:100px 0}
 .degree-list li::before{
   content:'→';position:absolute;left:0;color:var(--acc);font-size:12px;
 }
+
+/* ─── EQUIPMENT SHOWCASE ─── */
+.machine-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+  margin-bottom:64px;
+}
+.machine-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-card);padding:24px;
+  transition:border-color .3s var(--ease),box-shadow .3s var(--ease),transform .3s var(--ease);
+}
+.machine-card:hover{
+  border-color:var(--bacc);transform:translateY(-4px);
+  box-shadow:0 0 32px rgba(255,140,0,0.12);
+}
+.machine-art{
+  width:100%;height:auto;
+  background:linear-gradient(180deg,#15151b,#0c0c10);
+  border-radius:10px;margin-bottom:20px;
+}
+.machine-title{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:19px;color:var(--text);margin-bottom:2px;
+}
+.machine-role{
+  font-size:13px;color:var(--acc2);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.machine-specs{
+  list-style:none;border-top:1px solid var(--border);
+  padding-top:14px;display:flex;flex-direction:column;gap:6px;
+}
+.machine-specs li{font-size:13px;color:var(--muted)}
+.machine-specs b{color:var(--acc);font-weight:600}
 
 /* ─── TECH CAROUSEL ─── */
 #tech{background:var(--bg);overflow:hidden}
@@ -476,6 +540,8 @@ footer{
   nav.open .nav-cta{display:block;margin-top:8px;text-align:center}
   .stats-grid{grid-template-columns:1fr 1fr}
   .bento{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .machine-grid{grid-template-columns:1fr}
   .about-grid{grid-template-columns:1fr}
   .adv-grid{grid-template-columns:1fr}
   .footer-grid{grid-template-columns:1fr}
@@ -505,12 +571,12 @@ footer{
 <nav id="nav">
   <div class="nav-logo">НИТУ МИСИС · Горный</div>
   <ul class="nav-links">
-    <li><a href="#about">Институт</a></li>
-    <li><a href="#programs">Направления</a></li>
-    <li><a href="#tech">Технологии</a></li>
-    <li><a href="#advantages">Преимущества</a></li>
+    <li><a href="#process">Как добывают</a></li>
+    <li><a href="#programs">Специальности</a></li>
+    <li><a href="#tech">Техника</a></li>
+    <li><a href="#facts">Факты</a></li>
   </ul>
-  <a href="#apply" class="nav-cta">Поступить</a>
+  <a href="https://misis.ru/university/struktura-universiteta/instituty/gi/for-applicants/" class="nav-cta" target="_blank" rel="noopener">Поступить</a>
   <button class="burger" id="burger" aria-label="Меню">
     <span></span><span></span><span></span>
   </button>
@@ -522,11 +588,11 @@ footer{
   <div class="hero-spotlight" id="spotlight"></div>
   <div class="hero-content">
     <div class="hero-badge">Горный институт · НИТУ МИСИС</div>
-    <h1 class="hero-title">Добываем<br><span>будущее</span></h1>
-    <p class="hero-sub">Инженеры будущего. Глубина знаний. Сила технологий.</p>
+    <h1 class="hero-title">Всё начинается<br><span>под землёй</span></h1>
+    <p class="hero-sub">Как добывают то, из чего сделано всё вокруг — от смартфона до небоскрёба.</p>
     <div class="hero-btns">
-      <button class="btn-primary" id="btn-apply" onclick="document.getElementById('apply').scrollIntoView({behavior:'smooth'})">Поступить</button>
-      <a href="#programs" class="btn-ghost">Узнать больше</a>
+      <button class="btn-primary" id="btn-hero-primary" onclick="document.getElementById('process').scrollIntoView({behavior:'smooth'})">Как это устроено</button>
+      <a href="https://misis.ru/university/struktura-universiteta/instituty/gi/for-applicants/" class="btn-ghost" target="_blank" rel="noopener">Поступить в институт</a>
     </div>
   </div>
   <div class="hero-scroll">SCROLL</div>
@@ -536,20 +602,20 @@ footer{
 <section id="stats">
   <div class="stats-grid">
     <div class="stat-item reveal">
-      <div class="stat-num"><span class="cnt" data-target="100" data-suffix="+">0</span><span class="suffix">+</span></div>
-      <div class="stat-label">лет истории и инженерных традиций</div>
+      <div class="stat-num"><span class="cnt" data-target="450">0</span><span class="suffix">т</span></div>
+      <div class="stat-label">грузоподъёмность БелАЗ-75710 — самого большого самосвала в мире</div>
     </div>
     <div class="stat-item reveal">
-      <div class="stat-num"><span class="cnt" data-target="3500">0</span></div>
-      <div class="stat-label">студентов обучается прямо сейчас</div>
+      <div class="stat-num"><span class="cnt" data-target="1200">0</span><span class="suffix">м</span></div>
+      <div class="stat-label">на такую глубину уходят подземные рудники</div>
     </div>
     <div class="stat-item reveal">
-      <div class="stat-num">#<span class="cnt" data-target="1">0</span></div>
-      <div class="stat-label">в России по горному делу</div>
+      <div class="stat-num"><span class="cnt" data-target="6">0</span></div>
+      <div class="stat-label">инженерных специальностей в Горном институте</div>
     </div>
     <div class="stat-item reveal">
-      <div class="stat-num"><span class="cnt" data-target="87">0</span><span class="suffix">%</span></div>
-      <div class="stat-label">выпускников трудоустроены по специальности</div>
+      <div class="stat-num"><span class="cnt" data-target="10">0</span><span class="suffix">/10</span></div>
+      <div class="stat-label">твёрдость алмаза по шкале Мооса — абсолютный максимум</div>
     </div>
   </div>
 </section>
@@ -557,8 +623,8 @@ footer{
 <!-- PROGRAMS — BENTO -->
 <section id="programs">
   <div class="container">
-    <span class="section-label reveal">// Направления</span>
-    <h2 class="section-title reveal">Чему вы<br><span>будете учиться</span></h2>
+    <span class="section-label reveal">// Специальности</span>
+    <h2 class="section-title reveal">Шесть направлений<br><span>одной индустрии</span></h2>
     <div class="bento">
 
       <div class="bento-card reveal">
@@ -619,115 +685,185 @@ footer{
   </div>
 </section>
 
-<!-- ABOUT / TIMELINE -->
-<section id="about">
+<!-- PROCESS: КАК ДОБЫВАЮТ -->
+<section id="process">
   <div class="container">
-    <span class="section-label reveal">// О программах</span>
-    <h2 class="section-title reveal">Путь от<br><span>студента до инженера</span></h2>
-    <div class="about-grid">
+    <span class="section-label reveal">// Технологический цикл</span>
+    <h2 class="section-title reveal">Как руда становится<br><span>металлом на заводе</span></h2>
+    <div class="steps">
 
-      <div class="timeline reveal">
-        <div class="tl-item">
-          <div class="tl-year">1918</div>
-          <div class="tl-title">Основание</div>
-          <div class="tl-desc">Горный факультет основан в составе Московской горной академии.</div>
+      <div class="step-card reveal">
+        <div class="step-num">01</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </div>
-        <div class="tl-item">
-          <div class="tl-year">1960–е</div>
-          <div class="tl-title">Лидерство</div>
-          <div class="tl-desc">Институт становится ведущим центром подготовки горных инженеров СССР.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-year">2000–е</div>
-          <div class="tl-title">Международный трек</div>
-          <div class="tl-desc">Запуск программ двойных дипломов с университетами Германии, Австралии и ЮАР.</div>
-        </div>
-        <div class="tl-item">
-          <div class="tl-year">Сегодня</div>
-          <div class="tl-title">Цифровая горная академия</div>
-          <div class="tl-desc">VR-тренажёры, цифровые двойники шахт, автономные системы управления горными машинами.</div>
-        </div>
+        <div class="card-title">Разведка</div>
+        <div class="card-desc">Геологи изучают породу керном скважин и сейсморазведкой, чтобы найти месторождение и оценить его запасы.</div>
       </div>
 
-      <div class="reveal" style="transition-delay:.1s">
-        <div class="degree-card">
-          <span class="degree-badge">БАКАЛАВРИАТ</span>
-          <div class="degree-title">4 года · Очная форма</div>
-          <div class="degree-meta">Базовые инженерные компетенции и производственная практика</div>
-          <ul class="degree-list">
-            <li>Горная механика и электромеханика</li>
-            <li>Проектирование горных предприятий</li>
-            <li>Практика на ведущих горных компаниях</li>
-            <li>Государственный диплом инженера</li>
-          </ul>
+      <div class="step-card reveal" style="transition-delay:.06s">
+        <div class="step-num">02</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="2" x2="12" y2="22"/><path d="M8 6l4-4 4 4"/><path d="M6 22c0-4 2.5-7 6-7s6 3 6 7"/></svg>
         </div>
-        <div class="degree-card" style="transition-delay:.15s">
-          <span class="degree-badge">МАГИСТРАТУРА</span>
-          <div class="degree-title">2 года · Очная / заочная</div>
-          <div class="degree-meta">Научно-исследовательский трек и работа с компаниями-партнёрами</div>
-          <ul class="degree-list">
-            <li>Цифровые технологии в горном деле</li>
-            <li>Управление горными проектами</li>
-            <li>Стажировки в России и за рубежом</li>
-            <li>Возможность поступления в аспирантуру</li>
-          </ul>
+        <div class="card-title">Бурение и взрыв</div>
+        <div class="card-desc">Буровые станки формируют сетку скважин, в которые закладывают взрывчатку — она дробит монолитную породу на куски.</div>
+      </div>
+
+      <div class="step-card reveal" style="transition-delay:.12s">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 20l4-10 4 4 3-8 4 6 3-4"/></svg>
         </div>
+        <div class="step-num">03</div>
+        <div class="card-title">Выемка породы</div>
+        <div class="card-desc">Экскаваторы с ковшом в десятки кубометров зачерпывают раздробленную руду и грузят её в самосвалы.</div>
+      </div>
+
+      <div class="step-card reveal" style="transition-delay:.18s">
+        <div class="step-num">04</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><rect x="1" y="9" width="15" height="8" rx="1"/><path d="M16 12h4l3 3v2h-7z"/><circle cx="6" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+        </div>
+        <div class="card-title">Транспортировка</div>
+        <div class="card-desc">Карьерные самосвалы грузоподъёмностью до 450 тонн вывозят руду на поверхность или к обогатительной фабрике.</div>
+      </div>
+
+      <div class="step-card reveal" style="transition-delay:.24s">
+        <div class="step-num">05</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M4 4h16v4H4z"/><path d="M6 8v6a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8"/><path d="M10 16v4M14 16v4"/></svg>
+        </div>
+        <div class="card-title">Обогащение</div>
+        <div class="card-desc">Дробилки и сепараторы отделяют полезный минерал от пустой породы — так руда превращается в концентрат.</div>
+      </div>
+
+      <div class="step-card reveal" style="transition-delay:.3s">
+        <div class="step-num">06</div>
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L8 8H4l4 4-1.5 5.5L12 15l5.5 2.5L16 12l4-4h-4L12 2z"/></svg>
+        </div>
+        <div class="card-title">Готовое сырьё</div>
+        <div class="card-desc">Концентрат идёт на металлургический завод или огранку — и становится сталью, медью или бриллиантом.</div>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- TECH CAROUSEL -->
+<!-- EQUIPMENT SHOWCASE -->
 <section id="tech">
   <div class="container">
-    <span class="section-label reveal">// Оборудование</span>
-    <h2 class="section-title reveal">Технологии,<br><span>которые вы освоите</span></h2>
+    <span class="section-label reveal">// Техника</span>
+    <h2 class="section-title reveal">Машины,<br><span>которые двигают горы</span></h2>
+
+    <div class="machine-grid">
+      <div class="machine-card reveal">
+        <svg class="machine-art" viewBox="0 0 220 140">
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2a35"/><stop offset="1" stop-color="#16161c"/></linearGradient></defs>
+          <ellipse cx="110" cy="122" rx="95" ry="8" fill="#000" opacity=".35"/>
+          <path fill="url(#g1)" d="M20 100L120 100 120 70 55 70 40 45 165 40 172 100 190 100 190 118 15 118Z"/>
+          <circle cx="45" cy="118" r="17" fill="#0c0c10"/><circle cx="45" cy="118" r="7" fill="#3a3a45"/>
+          <circle cx="150" cy="118" r="17" fill="#0c0c10"/><circle cx="150" cy="118" r="7" fill="#3a3a45"/>
+          <rect x="55" y="55" width="26" height="18" rx="2" fill="#1c1c24"/>
+          <circle cx="184" cy="54" r="4" fill="#ffcf7d" style="filter:drop-shadow(0 0 6px #FF8C00)"/>
+        </svg>
+        <div class="machine-title">БелАЗ-75710</div>
+        <div class="machine-role">Карьерный самосвал</div>
+        <ul class="machine-specs">
+          <li><b>450 т</b> — грузоподъёмность</li>
+          <li><b>4 600 л.с.</b> — суммарная мощность двух дизелей</li>
+          <li><b>8</b> колёс высотой 4 метра каждое</li>
+        </ul>
+      </div>
+
+      <div class="machine-card reveal" style="transition-delay:.08s">
+        <svg class="machine-art" viewBox="0 0 220 140">
+          <ellipse cx="110" cy="122" rx="95" ry="8" fill="#000" opacity=".35"/>
+          <rect x="35" y="70" width="80" height="34" rx="4" fill="#20202a"/>
+          <rect x="45" y="104" width="60" height="12" fill="#141419"/>
+          <rect x="50" y="46" width="36" height="28" rx="4" fill="#20202a"/>
+          <circle cx="60" cy="58" r="4" fill="#ffcf7d" style="filter:drop-shadow(0 0 6px #FF8C00)"/>
+          <path d="M84 52L150 16 162 24 100 62Z" fill="#20202a"/>
+          <path d="M150 16L182 46 176 54 140 30Z" fill="#161620"/>
+          <path d="M176 46L206 52 198 78 170 68Z" fill="#141419"/>
+        </svg>
+        <div class="machine-title">ЭКГ-18</div>
+        <div class="machine-role">Карьерный экскаватор</div>
+        <ul class="machine-specs">
+          <li><b>18 м³</b> — объём ковша за один захват</li>
+          <li><b>800 т</b> — рабочая масса машины</li>
+          <li><b>~90 c</b> — время полного цикла черпания</li>
+        </ul>
+      </div>
+
+      <div class="machine-card reveal" style="transition-delay:.16s">
+        <svg class="machine-art" viewBox="0 0 220 140">
+          <ellipse cx="110" cy="122" rx="95" ry="8" fill="#000" opacity=".35"/>
+          <rect x="55" y="88" width="70" height="24" rx="3" fill="#20202a"/>
+          <rect x="60" y="112" width="60" height="8" fill="#141419"/>
+          <rect x="86" y="14" width="12" height="90" fill="#20202a"/>
+          <path d="M86 14L98 14 92 2Z" fill="#20202a"/>
+          <line x1="92" y1="30" x2="92" y2="88" stroke="#3a3a45" stroke-width="2"/>
+          <circle cx="92" cy="8" r="4" fill="#7fd8ff" style="filter:drop-shadow(0 0 6px #00d4ff)"/>
+          <rect x="60" y="74" width="20" height="14" rx="2" fill="#1c1c24"/>
+          <circle cx="66" cy="80" r="3" fill="#ffcf7d" style="filter:drop-shadow(0 0 5px #FF8C00)"/>
+        </svg>
+        <div class="machine-title">СБШ-250</div>
+        <div class="machine-role">Буровой станок</div>
+        <ul class="machine-specs">
+          <li><b>250 мм</b> — диаметр буровой скважины</li>
+          <li><b>до 32 м</b> — глубина бурения без наращивания</li>
+          <li>шарошечное бурение по крепкой породе</li>
+        </ul>
+      </div>
+    </div>
+
   </div>
+
   <div class="carousel-wrap">
     <div class="carousel-fade-l"></div>
     <div class="carousel-fade-r"></div>
     <div class="carousel-track" id="carousel">
       <!-- первый проход -->
-      <div class="tech-card"><div class="tech-num">01 / 06</div><div class="tech-title">Буровые установки</div><div class="tech-desc">Полноразмерные установки роторного и ударного бурения для учебных скважин глубиной до 200 м.</div></div>
-      <div class="tech-card"><div class="tech-num">02 / 06</div><div class="tech-title">Симуляторы горных машин</div><div class="tech-desc">Кабины-тренажёры для карьерных самосвалов, экскаваторов и подземных погрузчиков с физическими рычагами.</div></div>
-      <div class="tech-card"><div class="tech-num">03 / 06</div><div class="tech-title">VR-тренажёры</div><div class="tech-desc">Погружение в виртуальные подземные горизонты — безопасная отработка аварийных сценариев.</div></div>
-      <div class="tech-card"><div class="tech-num">04 / 06</div><div class="tech-title">3D-принтеры для прототипов</div><div class="tech-desc">Промышленная печать металлом и полимерами. Прототипирование горного оборудования за часы.</div></div>
-      <div class="tech-card"><div class="tech-num">05 / 06</div><div class="tech-title">Исследовательский комплекс</div><div class="tech-desc">Лаборатории механики горных пород, обогащения полезных ископаемых, взрывной физики.</div></div>
-      <div class="tech-card"><div class="tech-num">06 / 06</div><div class="tech-title">Центр цифровых двойников</div><div class="tech-desc">Облачная платформа моделирования шахт и карьеров в реальном времени с данными датчиков IoT.</div></div>
+      <div class="tech-card"><div class="tech-num">01 / 06</div><div class="tech-title">Конусная дробилка</div><div class="tech-desc">Первая ступень обогащения — измельчает куски руды до фракции, готовой к сепарации, до 3000 т/ч.</div></div>
+      <div class="tech-card"><div class="tech-num">02 / 06</div><div class="tech-title">Шахтный подъёмник</div><div class="tech-desc">Поднимает руду и людей из стволов глубиной свыше 1000 метров — главная артерия подземного рудника.</div></div>
+      <div class="tech-card"><div class="tech-num">03 / 06</div><div class="tech-title">Автономный самосвал</div><div class="tech-desc">Беспилотная техника на базе лидаров и спутниковой навигации уже работает в карьерах России без водителя.</div></div>
+      <div class="tech-card"><div class="tech-num">04 / 06</div><div class="tech-title">VR-тренажёры</div><div class="tech-desc">Отработка управления горной техникой и аварийных сценариев в виртуальной подземной выработке.</div></div>
+      <div class="tech-card"><div class="tech-num">05 / 06</div><div class="tech-title">Цифровой двойник шахты</div><div class="tech-desc">Модель месторождения в реальном времени, собранная из данных датчиков и систем позиционирования техники.</div></div>
+      <div class="tech-card"><div class="tech-num">06 / 06</div><div class="tech-title">Обогатительная фабрика</div><div class="tech-desc">Сепараторы и флотационные машины отделяют полезный минерал от пустой породы.</div></div>
       <!-- дубль для бесшовной анимации -->
-      <div class="tech-card"><div class="tech-num">01 / 06</div><div class="tech-title">Буровые установки</div><div class="tech-desc">Полноразмерные установки роторного и ударного бурения для учебных скважин глубиной до 200 м.</div></div>
-      <div class="tech-card"><div class="tech-num">02 / 06</div><div class="tech-title">Симуляторы горных машин</div><div class="tech-desc">Кабины-тренажёры для карьерных самосвалов, экскаваторов и подземных погрузчиков с физическими рычагами.</div></div>
-      <div class="tech-card"><div class="tech-num">03 / 06</div><div class="tech-title">VR-тренажёры</div><div class="tech-desc">Погружение в виртуальные подземные горизонты — безопасная отработка аварийных сценариев.</div></div>
-      <div class="tech-card"><div class="tech-num">04 / 06</div><div class="tech-title">3D-принтеры для прототипов</div><div class="tech-desc">Промышленная печать металлом и полимерами. Прототипирование горного оборудования за часы.</div></div>
-      <div class="tech-card"><div class="tech-num">05 / 06</div><div class="tech-title">Исследовательский комплекс</div><div class="tech-desc">Лаборатории механики горных пород, обогащения полезных ископаемых, взрывной физики.</div></div>
-      <div class="tech-card"><div class="tech-num">06 / 06</div><div class="tech-title">Центр цифровых двойников</div><div class="tech-desc">Облачная платформа моделирования шахт и карьеров в реальном времени с данными датчиков IoT.</div></div>
+      <div class="tech-card"><div class="tech-num">01 / 06</div><div class="tech-title">Конусная дробилка</div><div class="tech-desc">Первая ступень обогащения — измельчает куски руды до фракции, готовой к сепарации, до 3000 т/ч.</div></div>
+      <div class="tech-card"><div class="tech-num">02 / 06</div><div class="tech-title">Шахтный подъёмник</div><div class="tech-desc">Поднимает руду и людей из стволов глубиной свыше 1000 метров — главная артерия подземного рудника.</div></div>
+      <div class="tech-card"><div class="tech-num">03 / 06</div><div class="tech-title">Автономный самосвал</div><div class="tech-desc">Беспилотная техника на базе лидаров и спутниковой навигации уже работает в карьерах России без водителя.</div></div>
+      <div class="tech-card"><div class="tech-num">04 / 06</div><div class="tech-title">VR-тренажёры</div><div class="tech-desc">Отработка управления горной техникой и аварийных сценариев в виртуальной подземной выработке.</div></div>
+      <div class="tech-card"><div class="tech-num">05 / 06</div><div class="tech-title">Цифровой двойник шахты</div><div class="tech-desc">Модель месторождения в реальном времени, собранная из данных датчиков и систем позиционирования техники.</div></div>
+      <div class="tech-card"><div class="tech-num">06 / 06</div><div class="tech-title">Обогатительная фабрика</div><div class="tech-desc">Сепараторы и флотационные машины отделяют полезный минерал от пустой породы.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ADVANTAGES -->
-<section id="advantages">
+<!-- FACTS -->
+<section id="facts">
   <div class="container">
-    <span class="section-label reveal">// Почему МИСИС</span>
-    <h2 class="section-title reveal">Четыре причины<br><span>выбрать нас</span></h2>
+    <span class="section-label reveal">// Знаете ли вы</span>
+    <h2 class="section-title reveal">Индустрия<br><span>в цифрах и фактах</span></h2>
     <div class="adv-grid">
       <div class="adv-card reveal">
         <div class="adv-icon">
-          <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          <svg viewBox="0 0 24 24"><path d="M12 2L8 8H4l4 4-1.5 5.5L12 15l5.5 2.5L16 12l4-4h-4L12 2z"/></svg>
         </div>
         <div>
-          <div class="adv-title">Партнёрство с лидерами отрасли</div>
-          <div class="adv-desc">АЛРОСА, Норникель, Полюс, СУЭК, Металлоинвест — наши партнёры ждут ваших резюме ещё до защиты диплома.</div>
+          <div class="adv-title">Алмаз — самый твёрдый минерал</div>
+          <div class="adv-desc">10 из 10 по шкале Мооса. Именно поэтому алмазную крошку используют для резки и полировки других твёрдых материалов, включая сталь и бетон.</div>
         </div>
       </div>
       <div class="adv-card reveal" style="transition-delay:.08s">
         <div class="adv-icon">
-          <svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+          <svg viewBox="0 0 24 24"><rect x="1" y="9" width="15" height="8" rx="1"/><path d="M16 12h4l3 3v2h-7z"/><circle cx="6" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
         </div>
         <div>
-          <div class="adv-title">Собственная исследовательская база</div>
-          <div class="adv-desc">18 специализированных лабораторий, 3 научных полигона и центр компетенций по горной механике.</div>
+          <div class="adv-title">БелАЗ-75710 — рекордсмен планеты</div>
+          <div class="adv-desc">Крупнейший в мире серийный карьерный самосвал везёт 450 тонн груза — это масса тридцати взрослых синих китов.</div>
         </div>
       </div>
       <div class="adv-card reveal" style="transition-delay:.16s">
@@ -735,8 +871,8 @@ footer{
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         </div>
         <div>
-          <div class="adv-title">Международные стажировки</div>
-          <div class="adv-desc">Программы обмена с TU Bergakademie Freiberg (Германия), University of Queensland (Австралия) и Wits (ЮАР).</div>
+          <div class="adv-title">Шахты глубже небоскрёбов</div>
+          <div class="adv-desc">Некоторые подземные рудники уходят вглубь земли более чем на километр — это глубже, чем высота Бурдж-Халифы.</div>
         </div>
       </div>
       <div class="adv-card reveal" style="transition-delay:.24s">
@@ -744,49 +880,23 @@ footer{
           <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
         </div>
         <div>
-          <div class="adv-title">Карьерный центр с гарантией</div>
-          <div class="adv-desc">Персональный карьерный трек, база вакансий от 200+ компаний и гарантия трудоустройства для выпускников.</div>
+          <div class="adv-title">Карьеры водят себя сами</div>
+          <div class="adv-desc">В российских карьерах уже работают беспилотные самосвалы: маршрут, скорость и разгрузку они рассчитывают без водителя.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FORM -->
+<!-- CTA: ПОСТУПЛЕНИЕ -->
 <section id="apply">
   <div class="container">
     <div class="apply-wrap">
       <span class="section-label reveal" style="text-align:center;display:block">// Поступление</span>
-      <h2 class="section-title reveal" style="text-align:center">Начните<br><span>здесь</span></h2>
-      <p class="apply-sub reveal">Оставьте заявку — приёмная комиссия свяжется в течение одного рабочего дня.</p>
-      <form class="reveal" onsubmit="handleForm(event)">
-        <div class="field">
-          <label for="name">Имя</label>
-          <input type="text" id="name" placeholder="Иван Петров" required/>
-        </div>
-        <div class="field">
-          <label for="email">Email</label>
-          <input type="email" id="email" placeholder="ivan@example.com" required/>
-        </div>
-        <div class="field">
-          <label for="program">Направление</label>
-          <select id="program" required>
-            <option value="" disabled selected>Выберите направление</option>
-            <option>Горное дело</option>
-            <option>Взрывные технологии</option>
-            <option>Горная механика</option>
-            <option>Геотехнологии</option>
-            <option>Горная электромеханика</option>
-            <option>Инновации и AI в горном деле</option>
-          </select>
-        </div>
-        <button type="submit" class="btn-submit" id="btn-submit">Отправить заявку</button>
-      </form>
-      <div style="display:flex;justify-content:center">
-        <a href="https://t.me/misis_mining" class="tg-link reveal" style="transition-delay:.1s">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
-          Или напишите нам в Telegram
-        </a>
+      <h2 class="section-title reveal" style="text-align:center">Хотите стать<br><span>горным инженером?</span></h2>
+      <p class="apply-sub reveal">Все условия поступления, программы и контакты приёмной комиссии — на официальном сайте НИТУ МИСИС.</p>
+      <div class="reveal" style="display:flex;justify-content:center">
+        <a href="https://misis.ru/university/struktura-universiteta/instituty/gi/for-applicants/" class="btn-primary" id="btn-apply-cta" target="_blank" rel="noopener">Перейти на сайт приёмной комиссии</a>
       </div>
     </div>
   </div>
@@ -798,38 +908,28 @@ footer{
     <div class="footer-grid">
       <div class="footer-brand">
         <div class="nav-logo">НИТУ МИСИС · Горный институт</div>
-        <p class="footer-desc">Подготовка инженеров мирового уровня для горнодобывающей промышленности с 1918 года.</p>
-        <div class="social-links">
-          <a href="https://vk.com/misis" class="social-link" aria-label="ВКонтакте">
-            <svg viewBox="0 0 24 24" fill="var(--muted)"><path d="M15.07 2H8.93C3.33 2 2 3.33 2 8.93v6.14C2 20.67 3.33 22 8.93 22h6.14C20.67 22 22 20.67 22 15.07V8.93C22 3.33 20.67 2 15.07 2zm3.08 13.27h-1.57c-.6 0-.78-.47-1.84-1.55-1-.92-1.43-1.05-1.67-1.05-.34 0-.44.1-.44.58v1.41c0 .41-.13.66-1.22.66-1.8 0-3.8-1.09-5.2-3.12C4.8 9.7 4.3 7.87 4.3 7.5c0-.24.1-.47.58-.47h1.57c.43 0 .6.2.76.67.84 2.43 2.25 4.56 2.83 4.56.22 0 .32-.1.32-.65V9.8c-.07-1.17-.68-1.27-.68-1.69 0-.2.17-.41.44-.41h2.46c.37 0 .5.2.5.63v3.4c0 .37.17.5.27.5.22 0 .41-.13.82-.54 1.27-1.43 2.18-3.62 2.18-3.62.12-.24.3-.47.74-.47h1.57c.47 0 .58.24.47.57-.2.93-2.08 3.56-2.08 3.56-.16.27-.22.39 0 .69.16.22.7.68 1.05 1.1.66.74 1.16 1.36 1.29 1.79.14.42-.07.64-.52.64z"/></svg>
-          </a>
-          <a href="https://t.me/misis_mining" class="social-link" aria-label="Telegram">
-            <svg viewBox="0 0 24 24" fill="var(--muted)"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
-          </a>
-        </div>
+        <p class="footer-desc">Познавательный сайт о горном деле, добыче полезных ископаемых и инженерных специальностях Горного института НИТУ МИСИС.</p>
       </div>
       <div class="footer-col">
-        <h4>Институт</h4>
+        <h4>Сайт</h4>
         <ul class="footer-links">
-          <li><a href="#about">История</a></li>
-          <li><a href="#programs">Направления</a></li>
-          <li><a href="#tech">Технологии</a></li>
-          <li><a href="#advantages">Преимущества</a></li>
+          <li><a href="#process">Как добывают</a></li>
+          <li><a href="#programs">Специальности</a></li>
+          <li><a href="#tech">Техника</a></li>
+          <li><a href="#facts">Факты</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Поступление</h4>
         <ul class="footer-links">
-          <li><a href="#apply">Подать заявку</a></li>
-          <li><a href="#">Условия поступления</a></li>
-          <li><a href="#">Стипендии и гранты</a></li>
-          <li><a href="#">Контакты</a></li>
+          <li><a href="https://misis.ru/university/struktura-universiteta/instituty/gi/for-applicants/" target="_blank" rel="noopener">Приёмная комиссия</a></li>
+          <li><a href="https://misis.ru" target="_blank" rel="noopener">Официальный сайт НИТУ МИСИС</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <div class="footer-copy">© 2025 НИТУ МИСИС Горный институт. Все права защищены.</div>
-      <div class="footer-addr">Москва, Ленинский проспект, 6</div>
+      <div class="footer-copy">© 2025 НИТУ МИСИС Горный институт.</div>
+      <div class="footer-addr">Москва, Ленинский проспект, 4</div>
     </div>
   </div>
 </footer>
@@ -986,44 +1086,19 @@ footer{
 
 /* ═══════════ MAGNETIC BUTTON ═══════════ */
 (function(){
-  var btn = document.getElementById('btn-apply');
-  if(!btn) return;
-  btn.addEventListener('mousemove',function(e){
-    var r=btn.getBoundingClientRect();
-    var dx=e.clientX-(r.left+r.width/2);
-    var dy=e.clientY-(r.top+r.height/2);
-    btn.style.transform='translate('+(dx*.25)+'px,'+(dy*.25)+'px)';
-  });
-  btn.addEventListener('mouseleave',function(){
-    btn.style.transform='translate(0,0)';
-  });
-  var sub = document.getElementById('btn-submit');
-  if(!sub) return;
-  sub.addEventListener('mousemove',function(e){
-    var r=sub.getBoundingClientRect();
-    var dx=e.clientX-(r.left+r.width/2);
-    var dy=e.clientY-(r.top+r.height/2);
-    sub.style.transform='translate('+(dx*.2)+'px,'+(dy*.2)+'px)';
-  });
-  sub.addEventListener('mouseleave',function(){
-    sub.style.transform='translate(0,0)';
+  [document.getElementById('btn-hero-primary'), document.getElementById('btn-apply-cta')].forEach(function(btn){
+    if(!btn) return;
+    btn.addEventListener('mousemove',function(e){
+      var r=btn.getBoundingClientRect();
+      var dx=e.clientX-(r.left+r.width/2);
+      var dy=e.clientY-(r.top+r.height/2);
+      btn.style.transform='translate('+(dx*.25)+'px,'+(dy*.25)+'px)';
+    });
+    btn.addEventListener('mouseleave',function(){
+      btn.style.transform='translate(0,0)';
+    });
   });
 })();
-
-/* ═══════════ FORM ═══════════ */
-function handleForm(e){
-  e.preventDefault();
-  var btn=document.getElementById('btn-submit');
-  btn.textContent='✓ Заявка отправлена!';
-  btn.style.background='#2a9d5c';
-  btn.disabled=true;
-  setTimeout(function(){
-    btn.textContent='Отправить заявку';
-    btn.style.background='';
-    btn.disabled=false;
-    e.target.reset();
-  },4000);
-}
 </script>
 </body>
 </html>
